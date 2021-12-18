@@ -1,0 +1,58 @@
+.navbar {
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    height: 60px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items:center;
+}
+.navbar .hamburger-container {
+    height: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items:center;
+}
+.navbar .hamburger-container:hover {
+  background: rgba(0, 0, 0, 0.025);
+}
+.navbar .breadcrumb-container {
+  float: left;
+}
+.navbar .right-menu {
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items:center;
+}
+.navbar .right-menu:focus {
+  outline: none;
+}
+.navbar .right-menu .right-menu-item {
+  display: inline-block;
+  padding: 0 8px;
+  height: 100%;
+  font-size: 18px;
+  color: #5a5e66;
+  vertical-align: text-bottom;
+}
+.navbar .right-menu .right-menu-item.hover-effect {
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.navbar .right-menu .right-menu-item.hover-effect:hover {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.banner{
+    width: 100%;
+}

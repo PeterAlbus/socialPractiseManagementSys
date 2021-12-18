@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       https://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/mvc
+       https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <context:property-placeholder location="classpath:jdbcConfig.properties"/>
+
+    <!--连接池-->
+    <bean id="dataSource"
+          class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!--数据库驱动 -->
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <!--连接数据库的ur1 -->
+        <property name="url" value="${jdbc.url}" />
+        <!--连接数据库的用户名 -->
+        <property name="username" value="${jdbc.username}" />
+        <!--连接数据库的密码 -->
+        <property name="password" value="${jdbc.password}" />
+        <!--初始化值-->
+        <property name="initialSize" value="3" />
+        <!--最小空余的数量-->
+        <property name="minIdle" value="3" />
+        <!--最大连接数量-->
+        <property name="maxActive" value="20" />
+        <!--最长等待时间-->
+        <property name="maxWait" value="60000" />
+        <!--过滤器-->
+        <property name="filters" value="stat,wall" />
+    </bean>
+
+    <!--监控数据库druid-->
+    <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <property name="slowSqlMillis" value="3000" />
+        <!--记录sql-->
+        <property name="logSlowSql" value="true" />
+        <!--记录sql的时候可以合并-->
+        <property name="mergeSql" value="true" />
+    </bean>
+
+    <!--防火墙过滤-->
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql"/>
+    </bean>
+
+    <!--sqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <property name="typeAliasesPackage" value="com.peteralbus.entity"/>
+        <!--绑定mybatis配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="globalConfig" ref="globalConfig"/>
+        <property name="plugins">
+            <array>
+                <ref bean="mybatisPlusInterceptor"/>
+            </array>
+        </property>
+    </bean>
+
+    <bean id="globalConfig" class="com.baomidou.mybatisplus.core.config.GlobalConfig">
+        <property name="metaObjectHandler">
+            <bean class="com.peteralbus.handler.MyMetaObjectHandler"/>
+        </property>
+        <property name="dbConfig">
+            <bean class="com.baomidou.mybatisplus.core.config.GlobalConfig$DbConfig">
+                <property name="logicDeleteValue" value="1"/>
+                <property name="logicNotDeleteValue" value="0"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor" id="optimisticLockerInnerInterceptor"/>
+
+    <bean id="mybatisPlusInterceptor" class="com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor">
+        <property name="interceptors">
+            <list>
+                <ref bean="optimisticLockerInnerInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--配置dao接口扫描包，动态实现dao接口可以注入到spring容器中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--注入sqlSessionFactory-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--要扫描的dao包-->
+        <property name="basePackage" value="com.peteralbus.dao"/>
+    </bean>
+    <!--service扫描-->
+    <context:component-scan base-package="com.peteralbus.service"/>
+    <!--controller扫描-->
+    <context:component-scan base-package="com.peteralbus.controller" />
+    <!--声明式事务配置-->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--注解-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="del*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="find*" propagation="REQUIRED"/>
+            <tx:method name="get*" propagation="REQUIRED"/>
+            <tx:method name="apply*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <!-- 切入点表达式 -->
+        <aop:pointcut expression="execution(* com.peteralbus.service..*(..))" id="txPoint"/>
+        <!-- 配置事务增强 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+    </aop:config>
+    <aop:aspectj-autoproxy  proxy-target-class="true"/>
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <mvc:annotation-driven >
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+                        <property name="failOnEmptyBeans" value="false"/>
+                    </bean>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <!-- SpringMVC不处理静态资源(如.css .js .html .mp3 .mp4等) -->
+    <mvc:default-servlet-handler />
+    <!--自定义的filter-->
+    <bean id="roleOrFilter" class="com.peteralbus.config.CustomRolesAuthorizationFilter"/>
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!-- loginUrl认证提交地址，如果没有认证将会请求此地址进行认证，请求地址将由formAuthenticationFilter进行表单认证 -->
+        <property name="loginUrl" value="/login"/>
+        <!-- 认证成功统一跳转到first.action，建议不配置，shiro认证成功会默认跳转到上一个请求路径 -->
+        <property name="successUrl" value="/"/>
+        <!-- 通过unauthorizedUrl指定没有权限操作时跳转页面，这个位置会拦截不到，下面有给出解决方法 -->
+        <property name="unauthorizedUrl" value="/jsp/account/refuse.jsp"/>
+        <property name="filters">
+            <map>
+                <entry key="roleOrFilter" value-ref="roleOrFilter"/>
+            </map>
+        </property>
+        <!-- 过滤器定义，从上到下执行，一般将/**放在最下面 -->
+        <property name="filterChainDefinitions">
+            <value>
+                /iview/**=anon
+                /vue/**=anon
+                /css/**=anon
+                /js/**=anon
+                /img/**=anon
+
+                /user/**=anon
+                /register=anon
+                /login=anon
+
+                /jsp/account/** =anon
+                /jsp/admin/** = roles[admin]
+
+                /logout = logout
+                /** = authc
+                <!-- /**=authc 所有的url都必须通过认证才可以访问 -->
+                <!-- /**=anon 所有的url都可以匿名访问,必须配置在最后一排，不然所有的请求都不会拦截 -->
+            </value>
+        </property>
+    </bean>
+
+    <!-- 解决shiro配置的没有权限访问时，unauthorizedUrl不跳转到指定路径的问题 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.apache.shiro.authz.UnauthorizedException">/refuse</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- securityManager安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="customRealm"/>
+    </bean>
+
+    <!-- 配置自定义Realm -->
+    <bean id="customRealm" class="com.peteralbus.config.CustomRealm">
+        <!-- 将凭证匹配器设置到realm中，realm按照凭证匹配器的要求进行散列 -->
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+
+    <!-- 凭证匹配器 -->
+    <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <!-- 加密算法 -->
+        <property name="hashAlgorithmName" value="md5"/>
+        <!-- 迭代次数 -->
+        <property name="hashIterations" value="1"/>
+    </bean>
+
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!--避免url中出现jsessionid    2017-11-04修改-->
+        <property name="sessionIdUrlRewritingEnabled" value="false"/>
+    </bean>
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <!-- 开启Shiro注解 -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+</beans>

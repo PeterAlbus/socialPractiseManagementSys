@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<%@ page language="java"  pageEncoding="UTF-8"%>
+<el-menu
+        :default-active="activeIndex"
+        class="el-menu-vertical"
+        :collapse="true"
+>
+    <el-menu-item index="1" onclick="location.href='/index'">
+        <i class="el-icon-s-home"></i>
+        <template #title>主页</template>
+    </el-menu-item>
+    <shiro:hasRole name="teacher">
+    <el-menu-item index="2" onclick="location.href='/teacher/activities'">
+        <i class="el-icon-s-data"></i>
+        <template #title>活动列表</template>
+    </el-menu-item>
+    </shiro:hasRole>
+    <el-menu-item index="3">
+        <i class="el-icon-document"></i>
+        <template #title>Navigator Three</template>
+    </el-menu-item>
+    <el-menu-item index="4">
+        <i class="el-icon-setting"></i>
+        <template #title>Navigator Four</template>
+    </el-menu-item>
+</el-menu>
+

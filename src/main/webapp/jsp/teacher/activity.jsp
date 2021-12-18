@@ -1,0 +1,269 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: PeterAlbus
+  Date: 2021/12/14
+  Time: 15:37
+--%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>主页</title>
+    <!-- 导入 Vue 3 -->
+    <script src="${pageContext.request.contextPath}/vue/vue@next/vue.global.js"></script>
+    <!-- 导入组件库 -->
+    <script src="${pageContext.request.contextPath}/vue/element/index.full.js"></script>
+    <script src="${pageContext.request.contextPath}/vue/axios/axios.js"></script>
+    <script src="${pageContext.request.contextPath}/vue/qs.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/vue/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/teacher/activity.css">
+    <link rel="stylesheet" href="//unpkg.com/element-plus@1.1.0-beta.9/dist/index.css" />
+</head>
+<body>
+<div id="app">
+    <header>
+        <%@ include file="/jsp/header.html" %>
+    </header>
+    <div class="main">
+        <div class="container">
+            <el-container>
+                <el-aside width="80px">
+                    <%@ include file="/jsp/aside.html" %>
+                </el-aside>
+                <el-main>
+                    <el-page-header icon="el-icon-arrow-left" :content="title" @back="goBack"></el-page-header>
+                    <div class="container">
+                        <br/>
+                        <div class="activity-list">
+                            <div class="activity-list-top">
+                                <el-input v-model="keyWord" prefix-icon="el-icon-search" placeholder="请输入活动名搜索" style="width: 50%"></el-input>
+                                <div>
+                                    <el-button type="primary" @click="showAddActivityForm=true">添加活动<i class="el-icon-document-add el-icon--right"></i></el-button>
+                                    <el-drawer
+                                            v-model="showAddActivityForm"
+                                            title="添加社会实践活动"
+                                            direction="rtl"
+                                    >
+                                        <div class="drawer-box">
+                                            <el-form ref="form" :rules="rules" :model="form" style="width: 80%">
+                                                <el-form-item label="活动名称" prop="activityName">
+                                                    <el-input v-model="form.activityName" autocomplete="off"></el-input>
+                                                </el-form-item>
+                                                <el-form-item label="活动类型" prop="activityType">
+                                                    <el-select
+                                                            v-model="form.activityType"
+                                                            placeholder="选择活动类型"
+                                                    >
+                                                        <el-option label="阳光社区" value="阳光社区"></el-option>
+                                                        <el-option label="暖心公益" value="暖心公益"></el-option>
+                                                    </el-select>
+                                                </el-form-item>
+                                                <el-form-item label="活动介绍" prop="activityIntroduction">
+                                                    <el-input type="textarea" :rows="10" v-model="form.activityIntroduction"></el-input>
+                                                </el-form-item>
+                                                <el-form-item label="" label-width="80px">
+                                                    <el-button type="primary" @click="submit('form')" :loading="loading">提交</el-button>
+                                                    <el-button>取消</el-button>
+                                                </el-form-item>
+                                            </el-form>
+                                        </div>
+                                    </el-drawer>
+                                </div>
+                            </div>
+                            <el-divider content-position="left">负责的活动</el-divider>
+                            <div class="activity-list-card" v-for="item in activityListResult">
+                                <el-card class="box-card" shadow="hover">
+                                    <template #header>
+                                        <div class="card-header">
+                                            <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag></span>
+                                            <el-button class="button" type="text" @click="toModify(item.activityId)">管理</el-button>
+                                        </div>
+                                    </template>
+                                    <div>{{item.activityIntroduction}}</div>
+                                </el-card>
+                            </div>
+                            <el-divider content-position="left">所有活动</el-divider>
+                            <div class="activity-list-card" v-for="item in allActivitiesResult">
+                                <el-card class="box-card" shadow="hover">
+                                    <template #header>
+                                        <div class="card-header">
+                                            <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag></span>
+                                            <el-button class="button" type="text" @click="toDetail(item.activityId)">查看详情</el-button>
+                                        </div>
+                                    </template>
+                                    <div>
+                                        <h5>负责老师:<span v-for="i in item.teachers">{{i}}&emsp;</span></h5>
+                                        <p>{{item.activityIntroduction}}</p>
+                                    </div>
+                                </el-card>
+                            </div>
+                        </div>
+                    </div>
+                </el-main>
+            </el-container>
+        </div>
+    </div>
+    <footer>
+        <%@ include file="/jsp/foot.html" %>
+    </footer>
+</div>
+<script>
+    const App = {
+        data() {
+            return{
+                title:'社会实践列表',
+                user:{
+                    username:'',
+                    realName:'',
+                    avatarSrc: ''
+                },
+                form: {
+                    activityName: '',
+                    activityType: '',
+                    activityIntroduction: ''
+                },
+                rules: {
+                    activityName: [
+                        { required: true, message: '请填写活动名称', trigger: 'blur' }
+                    ],
+                    activityType: [
+                        { required: true, message: '请选择活动类型', trigger: 'blur' }
+                    ],
+                    activityIntroduction: [
+                        { required: true, message: '请填写活动简介', trigger: 'blur' }
+                    ],
+                },
+                activeIndex:'2',
+                keyWord:'',
+                activityList:[],
+                allActivities:[],
+                loading:false,
+                showAddActivityForm:false
+            }
+        },
+        mounted(){
+            this.user.realName='${realName}'
+            this.user.username='${username}'
+            this.user.avatarSrc='${avatarSrc}'
+            <c:forEach items="${activityList}" var="activity">
+            this.activityList.push({
+                activityId: '${activity.getActivityId()}',
+                activityName: '${activity.getActivityName()}',
+                activityType:'${activity.getActivityType()}',
+                activityIntroduction:'${activity.getActivityIntroduction()}'
+            })
+            </c:forEach>
+            let teachersName=[]
+            <c:forEach items="${allActivities}" var="activity">
+            teachersName=[]
+                <c:forEach items="${activity.getTeacherNameList()}" var="teacherName">
+            teachersName.push('${teacherName}')
+                </c:forEach>
+            this.allActivities.push({
+                activityId: '${activity.getActivityId()}',
+                activityName: '${activity.getActivityName()}',
+                activityType:'${activity.getActivityType()}',
+                activityIntroduction:'${activity.getActivityIntroduction()}',
+                teachers:teachersName
+            })
+            </c:forEach>
+        },
+        computed:{
+            activityListResult:function (){
+                let result=[];
+                if(this.keyWord==='')
+                {
+                    return this.activityList;
+                }
+                for(let i=0;i<this.activityList.length;i++)
+                {
+                    let str=this.activityList[i].activityName;
+                    if(str.search(this.keyWord)!==-1)
+                    {
+                        result.push(this.activityList[i]);
+                    }
+                }
+                return result;
+            },
+            allActivitiesResult:function (){
+                let result=[];
+                if(this.keyWord==='')
+                {
+                    return this.allActivities;
+                }
+                for(let i=0;i<this.allActivities.length;i++)
+                {
+                    let str=this.allActivities[i].activityName;
+                    if(str.search(this.keyWord)!==-1)
+                    {
+                        result.push(this.allActivities[i]);
+                    }
+                }
+                return result;
+            }
+        },
+        methods: {
+            goBack(){
+                window.history.go(-1);
+            },
+            submit(name) {
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.loading=true
+                        axios({
+                            method: "post",
+                            url: "/teacher/addActivity",
+                            data: this.form,
+                            transformRequest: [ function(data){
+                                return Qs.stringify(data)  //使用Qs将请求参数序列化
+                            }],
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'  //必须设置传输方式
+                            }
+                        })
+                            .then(res=>{
+                                this.loading=false
+                                if(res.data==="error")
+                                {
+                                    this.$message.error('创建活动失败!')
+                                }
+                                else
+                                {
+                                    this.$messageBox.confirm(
+                                        '创建活动成功，查看详情?',
+                                        '成功',
+                                        {
+                                            confirmButtonText: '确认',
+                                            cancelButtonText: '留在此页',
+                                            type: 'success',
+                                        }
+                                    )
+                                        .then(() => {
+
+                                        })
+                                        .catch(() => {
+                                            location.href="/teacher/activities"
+                                        })
+                                }
+                            })
+                    }
+                })
+            },
+            toDetail(id){
+                location.href="/teacher/activityDetail?activityId="+id
+            },
+            toModify(id){
+                location.href="/teacher/modifyActivity?activityId="+id
+            }
+        }
+    };
+    const app = Vue.createApp(App);
+    app.use(ElementPlus);
+    app.mount("#app");
+</script>
+</body>
+</html>
