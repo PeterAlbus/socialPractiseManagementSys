@@ -1,8 +1,9 @@
 <%--
   Created by IntelliJ IDEA.
-  User: PeterAlbus
-  Date: 2021/12/14
-  Time: 15:37
+  User: peteralbus
+  Date: 2021/12/18
+  Time: 12:15
+  To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
@@ -10,13 +11,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>主页</title>
+    <title>社会实践活动列表</title>
     <!-- 导入 Vue 3 -->
     <script src="${pageContext.request.contextPath}/vue/vue@next/vue.global.js"></script>
     <!-- 导入组件库 -->
     <script src="${pageContext.request.contextPath}/vue/element/index.full.js"></script>
-    <script src="${pageContext.request.contextPath}/vue/axios/axios.js"></script>
-    <script src="${pageContext.request.contextPath}/vue/qs.min.js"></script>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/vue/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
@@ -25,6 +24,58 @@
 </head>
 <body>
 <div id="app">
+    <el-dialog
+            v-model="dialogVisible"
+            title="Tips"
+    >
+        <div style="text-align:center">
+            <el-descriptions
+                    title="活动情况"
+                    :column="1"
+                    border
+            >
+                <template #extra>
+                    <el-button type="primary" size="small">参与活动</el-button>
+                </template>
+                <el-descriptions-item>
+                    <template #label>
+                        活动名称
+                    </template>
+                    {{showedActivity.activityName}}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                    <template #label>
+                        活动类别
+                    </template>
+                    {{showedActivity.activityType}}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                    <template #label>
+                        创建日期
+                    </template>
+                    {{showedActivity.gmtCreate}}
+                </el-descriptions-item>
+            </el-descriptions>
+        </div>
+        <br/>
+        <div>
+            <el-descriptions :column="1" border>
+                <el-descriptions-item>
+                    <template #label>
+                        简介
+                    </template>
+                    {{showedActivity.activityIntroduction}}
+                </el-descriptions-item>
+            </el-descriptions>
+        </div>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="dialogVisible = false"
+                >Confirm</el-button>
+            </span>
+        </template>
+    </el-dialog>
     <header>
         <%@ include file="/jsp/header.html" %>
     </header>
@@ -41,40 +92,8 @@
                         <div class="activity-list">
                             <div class="activity-list-top">
                                 <el-input v-model="keyWord" prefix-icon="el-icon-search" placeholder="请输入活动名搜索" style="width: 50%"></el-input>
-                                <div>
-                                    <el-button type="primary" @click="showAddActivityForm=true">添加活动<i class="el-icon-document-add el-icon--right"></i></el-button>
-                                    <el-drawer
-                                            v-model="showAddActivityForm"
-                                            title="添加社会实践活动"
-                                            direction="rtl"
-                                    >
-                                        <div class="drawer-box">
-                                            <el-form ref="form" :rules="rules" :model="form" style="width: 80%">
-                                                <el-form-item label="活动名称" prop="activityName">
-                                                    <el-input v-model="form.activityName" autocomplete="off"></el-input>
-                                                </el-form-item>
-                                                <el-form-item label="活动类型" prop="activityType">
-                                                    <el-select
-                                                            v-model="form.activityType"
-                                                            placeholder="选择活动类型"
-                                                    >
-                                                        <el-option label="阳光社区" value="阳光社区"></el-option>
-                                                        <el-option label="暖心公益" value="暖心公益"></el-option>
-                                                    </el-select>
-                                                </el-form-item>
-                                                <el-form-item label="活动介绍" prop="activityIntroduction">
-                                                    <el-input type="textarea" :rows="10" v-model="form.activityIntroduction"></el-input>
-                                                </el-form-item>
-                                                <el-form-item label="" label-width="80px">
-                                                    <el-button type="primary" @click="submit('form')" :loading="loading">提交</el-button>
-                                                    <el-button>取消</el-button>
-                                                </el-form-item>
-                                            </el-form>
-                                        </div>
-                                    </el-drawer>
-                                </div>
                             </div>
-                            <el-divider content-position="left">负责的活动</el-divider>
+                            <el-divider content-position="left">参加的活动</el-divider>
                             <div class="activity-list-card" v-for="item in activityListResult">
                                 <el-card class="box-card" shadow="hover">
                                     <template #header>
@@ -83,16 +102,17 @@
                                             <el-button class="button" type="text" @click="toModify(item.activityId)">管理</el-button>
                                         </div>
                                     </template>
+                                    <h5>负责老师:<span v-for="i in item.teachers">{{i.realName}}&emsp;</span></h5>
                                     <div>{{item.activityIntroduction}}</div>
                                 </el-card>
                             </div>
                             <el-divider content-position="left">所有活动</el-divider>
-                            <div class="activity-list-card" v-for="item in allActivitiesResult">
+                            <div class="activity-list-card" v-for="(item,index) in allActivitiesResult">
                                 <el-card class="box-card" shadow="hover">
                                     <template #header>
                                         <div class="card-header">
                                             <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag></span>
-                                            <el-button class="button" type="text" @click="toDetail(item.activityId)">查看详情</el-button>
+                                            <el-button class="button" type="text" @click="showDetail(index)">查看详情</el-button>
                                         </div>
                                     </template>
                                     <div>
@@ -115,34 +135,23 @@
     const App = {
         data() {
             return{
-                title:'社会实践列表',
+                title:'社会实践活动列表',
+                keyWord:'',
                 user:{
                     username:'',
                     realName:'',
                     avatarSrc: ''
                 },
-                form: {
-                    activityName: '',
-                    activityType: '',
-                    activityIntroduction: ''
-                },
-                rules: {
-                    activityName: [
-                        { required: true, message: '请填写活动名称', trigger: 'blur' }
-                    ],
-                    activityType: [
-                        { required: true, message: '请选择活动类型', trigger: 'blur' }
-                    ],
-                    activityIntroduction: [
-                        { required: true, message: '请填写活动简介', trigger: 'blur' }
-                    ],
-                },
-                activeIndex:'2',
-                keyWord:'',
                 activityList:[],
                 allActivities:[],
-                loading:false,
-                showAddActivityForm:false
+                showedActivity:{
+                    activityId: '',
+                    activityName: '',
+                    activityType:'',
+                    activityIntroduction:''
+                },
+                dialogVisible:false,
+                activeIndex:'3'
             }
         },
         mounted(){
@@ -166,6 +175,7 @@
                 activityName: '${activity.getActivityName()}',
                 activityType:'${activity.getActivityType()}',
                 activityIntroduction:'${activity.getActivityIntroduction()}',
+                gmtCreate:'${activity.getFormattedCreateDate()}',
                 teachers:teachers
             })
             </c:forEach>
@@ -185,6 +195,7 @@
                 activityName: '${activity.getActivityName()}',
                 activityType:'${activity.getActivityType()}',
                 activityIntroduction:'${activity.getActivityIntroduction()}',
+                gmtCreate:'${activity.getFormattedCreateDate()}',
                 teachers:teachers
             })
             </c:forEach>
@@ -227,55 +238,10 @@
             goBack(){
                 window.history.go(-1);
             },
-            submit(name) {
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        this.loading=true
-                        axios({
-                            method: "post",
-                            url: "/teacher/addActivity",
-                            data: this.form,
-                            transformRequest: [ function(data){
-                                return Qs.stringify(data)  //使用Qs将请求参数序列化
-                            }],
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'  //必须设置传输方式
-                            }
-                        })
-                            .then(res=>{
-                                this.loading=false
-                                if(res.data==="error")
-                                {
-                                    this.$message.error('创建活动失败!')
-                                }
-                                else
-                                {
-                                    this.$messageBox.confirm(
-                                        '创建活动成功，查看详情?',
-                                        '成功',
-                                        {
-                                            confirmButtonText: '确认',
-                                            cancelButtonText: '留在此页',
-                                            type: 'success',
-                                        }
-                                    )
-                                        .then(() => {
-
-                                        })
-                                        .catch(() => {
-                                            location.href="/teacher/activities"
-                                        })
-                                }
-                            })
-                    }
-                })
+            showDetail(index){
+                this.showedActivity=this.allActivitiesResult[index];
+                this.dialogVisible=true
             },
-            toDetail(id){
-                location.href="/teacher/activityDetail?activityId="+id
-            },
-            toModify(id){
-                location.href="/teacher/modifyActivity?activityId="+id
-            }
         }
     };
     const app = Vue.createApp(App);

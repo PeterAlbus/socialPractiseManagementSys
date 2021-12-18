@@ -66,15 +66,7 @@ public class AccountController
     {
         final String roleAdmin="admin";
         ModelAndView modelAndView=new ModelAndView();
-        Subject subject = SecurityUtils.getSubject();
-        if(subject.hasRole(roleAdmin))
-        {
-            modelAndView.setViewName("redirect: /admin/index");
-        }
-        else
-        {
-            modelAndView.setViewName("redirect: /index");
-        }
+        modelAndView.setViewName("redirect: /index");
         return modelAndView;
     }
 }

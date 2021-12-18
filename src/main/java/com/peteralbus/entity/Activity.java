@@ -34,7 +34,7 @@ public class Activity implements Serializable
     @TableLogic
     private Integer isDelete;
     @TableField(exist = false)
-    private List<String> teacherNameList;
+    private List<User> teacherList;
 
     public Long getActivityId()
     {
@@ -121,14 +121,14 @@ public class Activity implements Serializable
         this.isDelete = isDelete;
     }
 
-    public List<String> getTeacherNameList()
+    public List<User> getTeacherList()
     {
-        return teacherNameList;
+        return teacherList;
     }
 
-    public void setTeacherNameList(List<String> teacherNameList)
+    public void setTeacherList(List<User> teacherList)
     {
-        this.teacherNameList = teacherNameList;
+        this.teacherList = teacherList;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class Activity implements Serializable
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +
                 ", isDelete=" + isDelete +
-                ", teacherNameList=" + teacherNameList +
+                ", teacherList=" + teacherList +
                 '}';
     }
 }

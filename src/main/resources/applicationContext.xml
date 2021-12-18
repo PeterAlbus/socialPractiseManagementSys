@@ -172,8 +172,6 @@
                 /login=anon
 
                 /jsp/account/** =anon
-                /jsp/admin/** = roles[admin]
-
                 /logout = logout
                 /** = authc
                 <!-- /**=authc 所有的url都必须通过认证才可以访问 -->

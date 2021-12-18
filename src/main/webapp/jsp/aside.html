@@ -15,11 +15,17 @@
         <template #title>活动列表</template>
     </el-menu-item>
     </shiro:hasRole>
-    <el-menu-item index="3">
+    <shiro:hasRole name="student">
+        <el-menu-item index="3" onclick="location.href='/student/activities'">
+            <i class="el-icon-s-data"></i>
+            <template #title>活动列表</template>
+        </el-menu-item>
+    </shiro:hasRole>
+    <el-menu-item index="9">
         <i class="el-icon-document"></i>
         <template #title>Navigator Three</template>
     </el-menu-item>
-    <el-menu-item index="4">
+    <el-menu-item index="10">
         <i class="el-icon-setting"></i>
         <template #title>Navigator Four</template>
     </el-menu-item>

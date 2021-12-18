@@ -40,6 +40,7 @@ public class TeacherController
         User user=(User)subject.getPrincipal();
         List<Activity> activityList=activityService.getActivityByTeacher(user.getUserId());
         modelAndView.addObject("activityList",activityList);
+        System.out.println(activityList);
         List<Activity> allActivities=activityService.getActivities();
         modelAndView.addObject("allActivities",allActivities);
         modelAndView.setViewName("/jsp/teacher/activity.jsp");
@@ -82,12 +83,12 @@ public class TeacherController
             }
             else
             {
-                return "error";
+                return "error:didn't do any change";
             }
         }
         catch (Exception e)
         {
-            return "error"+e.getMessage();
+            return "error:"+e.getMessage();
         }
     }
     @ResponseBody

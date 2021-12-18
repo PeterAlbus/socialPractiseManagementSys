@@ -58,11 +58,33 @@ public class ActivityService
     }
     public List<Activity> getActivityByTeacher(Long teacherId)
     {
-        return activityDao.getActivityByTeacher(teacherId);
+        List<Activity> activityList=activityDao.getActivityByTeacher(teacherId);
+        for(Activity activity:activityList)
+        {
+            List<User> teacherList=activityDao.getTeacherList(activity.getActivityId());
+            activity.setTeacherList(teacherList);
+        }
+        return activityList;
+    }
+    public List<Activity> getActivityByStudent(Long studentId)
+    {
+        List<Activity> activityList=activityDao.getActivityByStudent(studentId);
+        for(Activity activity:activityList)
+        {
+            List<User> teacherList=activityDao.getTeacherList(activity.getActivityId());
+            activity.setTeacherList(teacherList);
+        }
+        return activityList;
     }
     public List<Activity> getActivities()
     {
-        return activityDao.getActivities();
+        List<Activity> activityList=activityDao.getActivities();
+        for(Activity activity:activityList)
+        {
+            List<User> teacherList=activityDao.getTeacherList(activity.getActivityId());
+            activity.setTeacherList(teacherList);
+        }
+        return activityList;
     }
     public int getCount()
     {
