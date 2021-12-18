@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peteralbus.dao.ActivityDao">
+    <resultMap id="activityWithTeacher" type="com.peteralbus.entity.Activity">
+        <id property="activityId" column="activity_id"/>
+        <result property="activityName" column="activity_name"/>
+        <result property="activityType" column="activity_type"/>
+        <result property="activityIntroduction" column="activity_introduction"/>
+        <result property="version" column="version"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <collection property="teacherNameList" javaType="list" ofType="String">
+            <constructor>
+                <arg column="real_name"/>
+            </constructor>
+        </collection>
+    </resultMap>
+    <select id="getActivityByTeacher" parameterType="java.lang.Long" resultMap="activityWithTeacher">
+            select activity.activity_id, activity_name, activity_type, activity_introduction, activity.version, activity.gmt_create, activity.gmt_modified,user.real_name
+            from social_practice_sys.activity,social_practice_sys.user,social_practice_sys.manage
+            where activity.is_delete=0 and user.user_id=#{userId} and user.user_id=manage.user_id and manage.activity_id=activity.activity_id
+    </select>
+    <select id="getActivities" resultMap="activityWithTeacher">
+        select activity.activity_id, activity_name, activity_type, activity_introduction, activity.version, activity.gmt_create, activity.gmt_modified,user.real_name
+        from social_practice_sys.activity,social_practice_sys.user,social_practice_sys.manage
+        where activity.is_delete=0 and user.user_id=manage.user_id and manage.activity_id=activity.activity_id
+    </select>
+    <select id="getCount" resultType="int">
+        select count(*) from social_practice_sys.activity
+    </select>
+</mapper>
