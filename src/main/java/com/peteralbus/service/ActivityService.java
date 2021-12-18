@@ -2,6 +2,7 @@ package com.peteralbus.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.peteralbus.dao.ActivityDao;
+import com.peteralbus.dao.GroupDao;
 import com.peteralbus.dao.ManageDao;
 import com.peteralbus.entity.Activity;
 import com.peteralbus.entity.Manage;
@@ -26,6 +27,8 @@ public class ActivityService
     @Autowired
     private ActivityDao activityDao;
     @Autowired
+    private GroupDao groupDao;
+    @Autowired
     private ManageDao manageDao;
     public int addActivity(Activity activity)
     {
@@ -46,7 +49,9 @@ public class ActivityService
     }
     public Activity getActivityById(Long activityId)
     {
-        return activityDao.selectById(activityId);
+        Activity activity=activityDao.selectById(activityId);
+        activity.setTeacherList(activityDao.getTeacherList(activityId));
+        return activity;
     }
     public Boolean checkIsManage(Long teacherId,Long activityId)
     {
@@ -78,7 +83,7 @@ public class ActivityService
     }
     public List<Activity> getActivities()
     {
-        List<Activity> activityList=activityDao.getActivities();
+        List<Activity> activityList=activityDao.selectList(null);
         for(Activity activity:activityList)
         {
             List<User> teacherList=activityDao.getTeacherList(activity.getActivityId());

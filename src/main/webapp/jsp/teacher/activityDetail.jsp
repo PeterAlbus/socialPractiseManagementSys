@@ -67,7 +67,7 @@
                             </div>
                             <br/>
                             <div>
-                                <el-descriptions :column="1" border>
+                                <el-descriptions :column="1" border direction="vertical">
                                     <el-descriptions-item>
                                         <template #label>
                                             简介

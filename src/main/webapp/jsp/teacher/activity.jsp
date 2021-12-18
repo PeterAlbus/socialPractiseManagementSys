@@ -65,6 +65,9 @@
                                                 <el-form-item label="活动介绍" prop="activityIntroduction">
                                                     <el-input type="textarea" :rows="10" v-model="form.activityIntroduction"></el-input>
                                                 </el-form-item>
+                                                <el-form-item label="参加人数">
+                                                    <el-slider v-model="range" range :max="50" :min="1"> </el-slider>
+                                                </el-form-item>
                                                 <el-form-item label="" label-width="80px">
                                                     <el-button type="primary" @click="submit('form')" :loading="loading">提交</el-button>
                                                     <el-button>取消</el-button>
@@ -87,7 +90,17 @@
                                 </el-card>
                             </div>
                             <el-divider content-position="left">所有活动</el-divider>
-                            <div class="activity-list-card" v-for="item in allActivitiesResult">
+                            <div style="text-align: center">
+                                <el-pagination
+                                        background
+                                        layout="total, sizes ,prev, pager, next, jumper"
+                                        :total="allActivitiesResult.length"
+                                        :page-sizes="[5, 10, 20, 40]"
+                                        v-model:page-size="pageSize"
+                                        v-model:current-page="currentPage">
+                                </el-pagination>
+                            </div>
+                            <div class="activity-list-card" v-for="item in currentPageAllActivities">
                                 <el-card class="box-card" shadow="hover">
                                     <template #header>
                                         <div class="card-header">
@@ -124,8 +137,11 @@
                 form: {
                     activityName: '',
                     activityType: '',
-                    activityIntroduction: ''
+                    activityIntroduction: '',
+                    minPeople:1,
+                    maxPeople:12
                 },
+                range:[1,12],
                 rules: {
                     activityName: [
                         { required: true, message: '请填写活动名称', trigger: 'blur' }
@@ -141,6 +157,8 @@
                 keyWord:'',
                 activityList:[],
                 allActivities:[],
+                currentPage:1,
+                pageSize:5,
                 loading:false,
                 showAddActivityForm:false
             }
@@ -221,6 +239,9 @@
                     }
                 }
                 return result;
+            },
+            currentPageAllActivities:function (){
+                return this.allActivitiesResult.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
             }
         },
         methods: {
@@ -231,6 +252,8 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.loading=true
+                        this.form.minPeople=this.range[0]
+                        this.form.maxPeople=this.range[1]
                         axios({
                             method: "post",
                             url: "/teacher/addActivity",

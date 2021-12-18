@@ -26,7 +26,7 @@
 <div id="app">
     <el-dialog
             v-model="dialogVisible"
-            title="Tips"
+            title="查看详情"
     >
         <div style="text-align:center">
             <el-descriptions
@@ -35,7 +35,7 @@
                     border
             >
                 <template #extra>
-                    <el-button type="primary" size="small">参与活动</el-button>
+                    <el-button type="primary" size="small" @click="toApply(showedActivity.activityId)">申请参与活动</el-button>
                 </template>
                 <el-descriptions-item>
                     <template #label>
@@ -59,7 +59,7 @@
         </div>
         <br/>
         <div>
-            <el-descriptions :column="1" border>
+            <el-descriptions :column="1" border direction="vertical">
                 <el-descriptions-item>
                     <template #label>
                         简介
@@ -68,13 +68,6 @@
                 </el-descriptions-item>
             </el-descriptions>
         </div>
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="dialogVisible = false"
-                >Confirm</el-button>
-            </span>
-        </template>
     </el-dialog>
     <header>
         <%@ include file="/jsp/header.html" %>
@@ -242,6 +235,9 @@
                 this.showedActivity=this.allActivitiesResult[index];
                 this.dialogVisible=true
             },
+            toApply(id){
+                location.href="/student/applyActivity?activityId="+id
+            }
         }
     };
     const app = Vue.createApp(App);

@@ -20,6 +20,7 @@ public class Participate implements Serializable
     private Long activityId;
     private Long groupId;
     private Boolean isFinished;
+    private Boolean isAccept;
     @Version
     private Integer version;
     @TableField(fill = FieldFill.INSERT)
@@ -123,6 +124,16 @@ public class Participate implements Serializable
         this.isDelete = isDelete;
     }
 
+    public Boolean getAccept()
+    {
+        return isAccept;
+    }
+
+    public void setAccept(Boolean accept)
+    {
+        isAccept = accept;
+    }
+
     @Override
     public String toString()
     {
@@ -132,6 +143,7 @@ public class Participate implements Serializable
                 ", activityId=" + activityId +
                 ", groupId=" + groupId +
                 ", isFinished=" + isFinished +
+                ", isAccept=" + isAccept +
                 ", version=" + version +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +

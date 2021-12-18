@@ -21,6 +21,8 @@ public class Activity implements Serializable
     private String activityName;
     private String activityType;
     private String activityIntroduction;
+    private Integer minPeople;
+    private Integer maxPeople;
     @Version
     private Integer version;
     @TableField(fill = FieldFill.INSERT)
@@ -131,6 +133,26 @@ public class Activity implements Serializable
         this.teacherList = teacherList;
     }
 
+    public Integer getMinPeople()
+    {
+        return minPeople;
+    }
+
+    public void setMinPeople(Integer minPeople)
+    {
+        this.minPeople = minPeople;
+    }
+
+    public Integer getMaxPeople()
+    {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(Integer maxPeople)
+    {
+        this.maxPeople = maxPeople;
+    }
+
     @Override
     public String toString()
     {
@@ -139,6 +161,8 @@ public class Activity implements Serializable
                 ", activityName='" + activityName + '\'' +
                 ", activityType='" + activityType + '\'' +
                 ", activityIntroduction='" + activityIntroduction + '\'' +
+                ", minPeople=" + minPeople +
+                ", maxPeople=" + maxPeople +
                 ", version=" + version +
                 ", gmtCreate=" + gmtCreate +
                 ", gmtModified=" + gmtModified +

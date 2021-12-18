@@ -40,13 +40,6 @@ public interface ActivityDao extends BaseMapper<Activity>
     List<User> getTeacherList(Long activityId);
 
     /**
-     * Gets activities.
-     *
-     * @return the activities
-     */
-    List<Activity> getActivities();
-
-    /**
      * Gets count.
      *
      * @return the count

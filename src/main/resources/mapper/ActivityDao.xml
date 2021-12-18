@@ -4,23 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.peteralbus.dao.ActivityDao">
     <select id="getActivityByTeacher" parameterType="java.lang.Long" resultType="com.peteralbus.entity.Activity">
-        select activity.activity_id, activity_name, activity_type, activity_introduction, activity.version, activity.gmt_create, activity.gmt_modified
+        select activity.activity_id, activity_name, activity_type, activity_introduction, min_people, max_people,activity.version, activity.gmt_create, activity.gmt_modified
         from social_practice_sys.activity,social_practice_sys.user,social_practice_sys.manage
         where activity.is_delete=0 and user.user_id=#{userId} and user.user_id=manage.user_id and manage.activity_id=activity.activity_id
     </select>
     <select id="getActivityByStudent" parameterType="java.lang.Long" resultType="com.peteralbus.entity.Activity">
-        select activity.activity_id, activity_name, activity_type, activity_introduction, activity.version, activity.gmt_create, activity.gmt_modified
+        select activity.activity_id, activity_name, activity_type, activity_introduction, min_people, max_people, activity.version, activity.gmt_create, activity.gmt_modified
         from activity,participate,user
         where user.user_id=#{userId} and activity.activity_id=participate.activity_id and user.user_id=participate.user_id and activity.is_delete=0
     </select>
     <select id="getTeacherList" parameterType="java.lang.Long" resultType="com.peteralbus.entity.User">
         select user.user_id,username,real_name,user_phone,avatar_src from activity,user,manage
         where activity.activity_id=#{activityId} and manage.activity_id=activity.activity_id and manage.user_id=user.user_id and manage.is_delete=0 and user.is_delete=0
-    </select>
-    <select id="getActivities" resultType="com.peteralbus.entity.Activity">
-        select activity.activity_id, activity_name, activity_type, activity_introduction, activity.version, activity.gmt_create, activity.gmt_modified
-        from activity
-        where activity.is_delete=0
     </select>
     <select id="getCount" resultType="int">
         select count(*) from social_practice_sys.activity
