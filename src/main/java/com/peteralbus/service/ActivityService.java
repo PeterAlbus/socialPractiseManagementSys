@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.peteralbus.dao.ActivityDao;
 import com.peteralbus.dao.GroupDao;
 import com.peteralbus.dao.ManageDao;
+import com.peteralbus.dao.ParticipateDao;
 import com.peteralbus.entity.*;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.shiro.SecurityUtils;
@@ -25,9 +26,9 @@ public class ActivityService
     @Autowired
     private ActivityDao activityDao;
     @Autowired
-    private GroupService groupService;
+    private GroupDao groupDao;
     @Autowired
-    private ParticipateService participateService;
+    private ParticipateDao participateDao;
     @Autowired
     private ManageDao manageDao;
     public int addActivity(Activity activity)
@@ -90,24 +91,6 @@ public class ActivityService
             activity.setTeacherList(teacherList);
         }
         return activityList;
-    }
-    public int participateWithNewGroup(Group group)
-    {
-        Subject subject = SecurityUtils.getSubject();
-        User user=(User)subject.getPrincipal();
-        group.setLeaderId(user.getUserId());
-        int result=groupService.insertGroup(group);
-        if(result>0)
-        {
-            Participate participate=new Participate();
-            participate.setUserId(group.getLeaderId());
-            participate.setGroupId(group.getGroupId());
-            participate.setActivityId(group.getActivityId());
-            participate.setFinished(false);
-            participate.setAccept(true);
-            result=participateService.insertParticipate(participate);
-        }
-        return result;
     }
     public int getCount()
     {

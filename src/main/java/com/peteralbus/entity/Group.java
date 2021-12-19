@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * The type Group.
@@ -18,6 +19,8 @@ public class Group implements Serializable
     private Long groupId;
     private String groupName;
     private Long leaderId;
+    @TableField(exist = false)
+    private String leaderName;
     private Long activityId;
     @Version
     private Integer version;
@@ -92,6 +95,11 @@ public class Group implements Serializable
         this.gmtCreate = gmtCreate;
     }
 
+    public String getFormattedCreateDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return getGmtCreate().format(formatter);
+    }
+
     public LocalDateTime getGmtModified()
     {
         return gmtModified;
@@ -112,6 +120,16 @@ public class Group implements Serializable
         this.isDelete = isDelete;
     }
 
+    public String getLeaderName()
+    {
+        return leaderName;
+    }
+
+    public void setLeaderName(String leaderName)
+    {
+        this.leaderName = leaderName;
+    }
+
     @Override
     public String toString()
     {
@@ -119,6 +137,7 @@ public class Group implements Serializable
                 "groupId=" + groupId +
                 ", groupName='" + groupName + '\'' +
                 ", leaderId=" + leaderId +
+                ", leaderName='" + leaderName + '\'' +
                 ", activityId=" + activityId +
                 ", version=" + version +
                 ", gmtCreate=" + gmtCreate +

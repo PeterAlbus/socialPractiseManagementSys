@@ -48,6 +48,9 @@
                                     <el-option label="暖心公益" value="暖心公益"></el-option>
                                 </el-select>
                             </el-form-item>
+                            <el-form-item label="参加人数">
+                                <el-slider v-model="range" range :max="50" :min="1"> </el-slider>
+                            </el-form-item>
                             <el-form-item label="活动介绍" prop="activityIntroduction">
                                 <el-input type="textarea" :rows="10" v-model="activity.activityIntroduction"></el-input>
                             </el-form-item>
@@ -75,11 +78,14 @@
                     realName:'',
                     avatarSrc: ''
                 },
+                range:[${activity.getMinPeople()},${activity.getMaxPeople()}],
                 activity:{
                     activityId: '${activity.getActivityId()}',
                     activityName: '${activity.getActivityName()}',
                     activityType:'${activity.getActivityType()}',
                     activityIntroduction:'${activity.getActivityIntroduction()}',
+                    minPeople:${activity.getMinPeople()},
+                    maxPeople:${activity.getMaxPeople()},
                     gmtCreate:'${activity.getFormattedCreateDate()}'
                 },
                 rules: {
@@ -109,6 +115,8 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.loading=true
+                        this.form.minPeople=this.range[0]
+                        this.form.maxPeople=this.range[1]
                         axios({
                             method: "post",
                             url: "/teacher/modifyActivity",

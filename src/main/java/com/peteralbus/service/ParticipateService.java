@@ -1,7 +1,12 @@
 package com.peteralbus.service;
 
+import com.peteralbus.dao.GroupDao;
 import com.peteralbus.dao.ParticipateDao;
+import com.peteralbus.entity.Group;
 import com.peteralbus.entity.Participate;
+import com.peteralbus.entity.User;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,8 +15,40 @@ public class ParticipateService
 {
     @Autowired
     ParticipateDao participateDao;
+    @Autowired
+    GroupDao groupDao;
     public int insertParticipate(Participate participate)
     {
+        return participateDao.insert(participate);
+    }
+    public int participateWithNewGroup(Group group)
+    {
+        Subject subject = SecurityUtils.getSubject();
+        User user=(User)subject.getPrincipal();
+        group.setLeaderId(user.getUserId());
+        int result=groupDao.insert(group);
+        if(result>0)
+        {
+            Participate participate=new Participate();
+            participate.setUserId(group.getLeaderId());
+            participate.setGroupId(group.getGroupId());
+            participate.setActivityId(group.getActivityId());
+            participate.setFinished(false);
+            participate.setAccept(true);
+            result=participateDao.insert(participate);
+        }
+        return result;
+    }
+    public int participateWithOldGroup(Group group)
+    {
+        Subject subject = SecurityUtils.getSubject();
+        User user=(User)subject.getPrincipal();
+        Participate participate=new Participate();
+        participate.setUserId(user.getUserId());
+        participate.setGroupId(group.getGroupId());
+        participate.setActivityId(group.getActivityId());
+        participate.setFinished(false);
+        participate.setAccept(false);
         return participateDao.insert(participate);
     }
 }

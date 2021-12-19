@@ -59,6 +59,12 @@
                                     </el-descriptions-item>
                                     <el-descriptions-item>
                                         <template #label>
+                                            活动人数
+                                        </template>
+                                        {{activity.minPeople}}-{{activity.maxPeople}}人
+                                    </el-descriptions-item>
+                                    <el-descriptions-item>
+                                        <template #label>
                                             创建日期
                                         </template>
                                         {{activity.gmtCreate}}
@@ -101,6 +107,8 @@
                     activityName: '${activity.getActivityName()}',
                     activityType:'${activity.getActivityType()}',
                     activityIntroduction:'${activity.getActivityIntroduction()}',
+                    minPeople:'${activity.getMinPeople()}',
+                    maxPeople:'${activity.getMaxPeople()}',
                     gmtCreate:'${activity.getFormattedCreateDate()}'
                 },
                 activeIndex:'2'

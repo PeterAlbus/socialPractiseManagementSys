@@ -5,6 +5,7 @@ import com.peteralbus.entity.Group;
 import com.peteralbus.entity.User;
 import com.peteralbus.service.ActivityService;
 import com.peteralbus.service.GroupService;
+import com.peteralbus.service.ParticipateService;
 import com.peteralbus.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -28,6 +29,8 @@ public class StudentController
     ActivityService activityService;
     @Autowired
     GroupService groupService;
+    @Autowired
+    ParticipateService participateService;
     @RequestMapping("/activities")
     public ModelAndView activities()
     {
@@ -48,22 +51,47 @@ public class StudentController
         Activity activity= activityService.getActivityById(activityId);
         modelAndView.addObject("activity",activity);
         List<Group> groupList=groupService.getGroupListByActivity(activityId);
-        modelAndView.addObject(groupList);
+        modelAndView.addObject("groupList",groupList);
         modelAndView.setViewName("/jsp/student/applyActivity.jsp");
+        return modelAndView;
+    }
+    public ModelAndView manageActivity(Long activityId)
+    {
+        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        modelAndView.setViewName("/jsp/student/manageActivity.jsp");
         return modelAndView;
     }
     @ResponseBody
     @RequestMapping("/participateWithNewGroup")
     public String participateWithNewGroup(Group group)
     {
-        int result=activityService.participateWithNewGroup(group);
+        int result=participateService.participateWithNewGroup(group);
         if(result>0)
         {
             return "success";
         }
         else
         {
-            return "fail";
+            return "error";
+        }
+    }
+    @ResponseBody
+    @RequestMapping("/participateWithOldGroup")
+    public String participateWithOldGroup(Long groupId)
+    {
+        Group group=groupService.getById(groupId);
+        if(group==null)
+        {
+            return "error:未找到该小组";
+        }
+        int result=participateService.participateWithOldGroup(group);
+        if(result>0)
+        {
+            return "success";
+        }
+        else
+        {
+            return "error";
         }
     }
 }

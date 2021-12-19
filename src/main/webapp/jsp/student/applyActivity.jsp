@@ -66,6 +66,12 @@
                                 </el-descriptions-item>
                                 <el-descriptions-item>
                                     <template #label>
+                                        活动人数
+                                    </template>
+                                    {{activity.minPeople}}-{{activity.maxPeople}}人
+                                </el-descriptions-item>
+                                <el-descriptions-item>
+                                    <template #label>
                                         负责老师
                                     </template>
                                     <span v-for="i in activity.teachers">{{i.realName}}&emsp;</span>
@@ -98,12 +104,27 @@
                                 <el-row v-if="form.isNewGroup">
                                     <el-col :span="12">
                                         <el-form-item label="小组名称" >
-                                            <el-input v-model="form.groupName"></el-input>
+                                            <el-input v-model="form.group.groupName"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
-                                <div class="button-group">
+                                <div class="button-group" v-if="form.isNewGroup">
                                     <el-button type="primary" @click="newGroup">创建小组并参加活动</el-button>
+                                </div>
+                                <div class="group-list" v-if="!form.isNewGroup">
+                                    <el-table :data="groupListResult" style="width: 100%">
+                                        <el-table-column prop="groupName" label="小组名"></el-table-column>
+                                        <el-table-column prop="gmtCreate" label="创建日期"></el-table-column>
+                                        <el-table-column prop="leaderName" label="组长姓名"></el-table-column>
+                                        <el-table-column align="right">
+                                            <template #header>
+                                                <el-input v-model="keyWord" size="mini" placeholder="搜索姓名/组名"></el-input>
+                                            </template>
+                                            <template #default="scope">
+                                                <el-button size="mini" @click="joinGroup(scope.row.groupId)">加入</el-button>
+                                            </template>
+                                        </el-table-column>
+                                    </el-table>
                                 </div>
                             </el-form>
                         </div>
@@ -131,14 +152,15 @@
                     group:{
                         groupName:'',
                         activityId:'${activity.getActivityId()}'
-                    },
-                    groupId:0
+                    }
                 },
                 activity:{
                     activityId: '${activity.getActivityId()}',
                     activityName: '${activity.getActivityName()}',
                     activityType:'${activity.getActivityType()}',
                     activityIntroduction:'${activity.getActivityIntroduction()}',
+                    minPeople:'${activity.getMinPeople()}',
+                    maxPeople:'${activity.getMaxPeople()}',
                     gmtCreate:'${activity.getFormattedCreateDate()}',
                     teachers:[
                         <c:forEach items="${activity.getTeacherList()}" var="teacher">
@@ -152,6 +174,18 @@
                         </c:forEach>
                     ]
                 },
+                groupList:[
+                    <c:forEach items="${groupList}" var="group">
+                    {
+                        groupId:'${group.getGroupId()}',
+                        groupName:'${group.getGroupName()}',
+                        leaderId:'${group.getLeaderId()}',
+                        leaderName:'${group.getLeaderName()}',
+                        gmtCreate:'${group.getFormattedCreateDate()}'
+                    },
+                    </c:forEach>
+                ],
+                keyWord:'',
                 activeIndex:'3'
             }
         },
@@ -187,7 +221,7 @@
                             }
                         }).then(res=>{
                             this.loading=false
-                            if(res.data==="fail")
+                            if(res.data==="error")
                             {
                                 this.$message.error('创建小组失败!')
                             }
@@ -197,9 +231,62 @@
                             }
                         })
                     })
-
-
+            },
+            joinGroup(id){
+                this.$messageBox.confirm(
+                    '参与社会实践活动后不可更改小组，不可退出，确认申请？',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "post",
+                            url: "/student/participateWithOldGroup",
+                            data: {
+                                groupId:id
+                            },
+                            transformRequest: [ function(data){
+                                return Qs.stringify(data)  //使用Qs将请求参数序列化
+                            }],
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'  //必须设置传输方式
+                            }
+                        }).then(res=>{
+                            this.loading=false
+                            if(res.data==="error")
+                            {
+                                this.$message.error('创建小组失败!')
+                            }
+                            else
+                            {
+                                location.href="/"
+                            }
+                        })
+                    })
             }
+        },
+        computed:{
+            groupListResult:function (){
+                let result=[];
+                if(this.keyWord==='')
+                {
+                    return this.groupList;
+                }
+                for(let i=0;i<this.groupList.length;i++)
+                {
+                    let str=this.groupList[i].groupName;
+                    let str_leader=this.groupList[i].leaderName;
+                    if(str.search(this.keyWord)!==-1||str_leader.search(this.keyWord)!==-1)
+                    {
+                        result.push(this.groupList[i]);
+                    }
+                }
+                return result;
+            },
         }
     };
     const app = Vue.createApp(App);

@@ -86,7 +86,10 @@
                                             <el-button class="button" type="text" @click="toModify(item.activityId)">管理</el-button>
                                         </div>
                                     </template>
-                                    <div>{{item.activityIntroduction}}</div>
+                                    <div>
+                                        <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
+                                        <p>{{item.activityIntroduction}}</p>
+                                    </div>
                                 </el-card>
                             </div>
                             <el-divider content-position="left">所有活动</el-divider>
@@ -110,6 +113,7 @@
                                     </template>
                                     <div>
                                         <h5>负责老师:<span v-for="i in item.teachers">{{i.realName}}&emsp;</span></h5>
+                                        <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
                                         <p>{{item.activityIntroduction}}</p>
                                     </div>
                                 </el-card>
@@ -184,6 +188,9 @@
                 activityName: '${activity.getActivityName()}',
                 activityType:'${activity.getActivityType()}',
                 activityIntroduction:'${activity.getActivityIntroduction()}',
+                minPeople:'${activity.getMinPeople()}',
+                maxPeople:'${activity.getMaxPeople()}',
+                gmtCreate:'${activity.getFormattedCreateDate()}',
                 teachers:teachers
             })
             </c:forEach>
@@ -203,6 +210,9 @@
                 activityName: '${activity.getActivityName()}',
                 activityType:'${activity.getActivityType()}',
                 activityIntroduction:'${activity.getActivityIntroduction()}',
+                minPeople:'${activity.getMinPeople()}',
+                maxPeople:'${activity.getMaxPeople()}',
+                gmtCreate:'${activity.getFormattedCreateDate()}',
                 teachers:teachers
             })
             </c:forEach>

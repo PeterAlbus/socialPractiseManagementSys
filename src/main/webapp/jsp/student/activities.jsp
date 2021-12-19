@@ -51,6 +51,12 @@
                 </el-descriptions-item>
                 <el-descriptions-item>
                     <template #label>
+                        活动人数
+                    </template>
+                    {{showedActivity.minPeople}}-{{showedActivity.maxPeople}}人
+                </el-descriptions-item>
+                <el-descriptions-item>
+                    <template #label>
                         创建日期
                     </template>
                     {{showedActivity.gmtCreate}}
@@ -96,11 +102,22 @@
                                         </div>
                                     </template>
                                     <h5>负责老师:<span v-for="i in item.teachers">{{i.realName}}&emsp;</span></h5>
+                                    <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
                                     <div>{{item.activityIntroduction}}</div>
                                 </el-card>
                             </div>
                             <el-divider content-position="left">所有活动</el-divider>
-                            <div class="activity-list-card" v-for="(item,index) in allActivitiesResult">
+                            <div style="text-align: center">
+                                <el-pagination
+                                        background
+                                        layout="total, sizes ,prev, pager, next, jumper"
+                                        :total="allActivitiesResult.length"
+                                        :page-sizes="[5, 10, 20, 40]"
+                                        v-model:page-size="pageSize"
+                                        v-model:current-page="currentPage">
+                                </el-pagination>
+                            </div>
+                            <div class="activity-list-card" v-for="(item,index) in currentPageAllActivities">
                                 <el-card class="box-card" shadow="hover">
                                     <template #header>
                                         <div class="card-header">
@@ -110,6 +127,7 @@
                                     </template>
                                     <div>
                                         <h5>负责老师:<span v-for="i in item.teachers">{{i.realName}}&emsp;</span></h5>
+                                        <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
                                         <p>{{item.activityIntroduction}}</p>
                                     </div>
                                 </el-card>
@@ -144,6 +162,8 @@
                     activityIntroduction:''
                 },
                 dialogVisible:false,
+                currentPage:1,
+                pageSize:5,
                 activeIndex:'3'
             }
         },
@@ -168,6 +188,8 @@
                 activityName: '${activity.getActivityName()}',
                 activityType:'${activity.getActivityType()}',
                 activityIntroduction:'${activity.getActivityIntroduction()}',
+                minPeople:'${activity.getMinPeople()}',
+                maxPeople:'${activity.getMaxPeople()}',
                 gmtCreate:'${activity.getFormattedCreateDate()}',
                 teachers:teachers
             })
@@ -188,6 +210,8 @@
                 activityName: '${activity.getActivityName()}',
                 activityType:'${activity.getActivityType()}',
                 activityIntroduction:'${activity.getActivityIntroduction()}',
+                minPeople:'${activity.getMinPeople()}',
+                maxPeople:'${activity.getMaxPeople()}',
                 gmtCreate:'${activity.getFormattedCreateDate()}',
                 teachers:teachers
             })
@@ -225,6 +249,9 @@
                     }
                 }
                 return result;
+            },
+            currentPageAllActivities:function (){
+                return this.allActivitiesResult.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
             }
         },
         methods: {
@@ -232,7 +259,7 @@
                 window.history.go(-1);
             },
             showDetail(index){
-                this.showedActivity=this.allActivitiesResult[index];
+                this.showedActivity=this.currentPageAllActivities[index];
                 this.dialogVisible=true
             },
             toApply(id){
