@@ -16,6 +16,8 @@
     <script src="${pageContext.request.contextPath}/vue/vue@next/vue.global.js"></script>
     <!-- 导入组件库 -->
     <script src="${pageContext.request.contextPath}/vue/element/index.full.js"></script>
+    <script src="${pageContext.request.contextPath}/vue/axios/axios.js"></script>
+    <script src="${pageContext.request.contextPath}/vue/qs.min.js"></script>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/vue/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
@@ -101,7 +103,7 @@
                                     </el-col>
                                 </el-row>
                                 <div class="button-group">
-                                    <el-button type="primary">创建小组并参加活动</el-button>
+                                    <el-button type="primary" @click="newGroup">创建小组并参加活动</el-button>
                                 </div>
                             </el-form>
                         </div>
@@ -126,7 +128,10 @@
                 },
                 form:{
                     isNewGroup:true,
-                    group:{},
+                    group:{
+                        groupName:'',
+                        activityId:'${activity.getActivityId()}'
+                    },
                     groupId:0
                 },
                 activity:{
@@ -158,6 +163,42 @@
         methods: {
             goBack(){
                 window.history.go(-1);
+            },
+            newGroup(){
+                this.$messageBox.confirm(
+                    '参与社会实践活动后不可更改小组，不可退出，确认申请？',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "post",
+                            url: "/student/participateWithNewGroup",
+                            data: this.form.group,
+                            transformRequest: [ function(data){
+                                return Qs.stringify(data)  //使用Qs将请求参数序列化
+                            }],
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'  //必须设置传输方式
+                            }
+                        }).then(res=>{
+                            this.loading=false
+                            if(res.data==="fail")
+                            {
+                                this.$message.error('创建小组失败!')
+                            }
+                            else
+                            {
+                                location.href="/"
+                            }
+                        })
+                    })
+
+
             }
         }
     };

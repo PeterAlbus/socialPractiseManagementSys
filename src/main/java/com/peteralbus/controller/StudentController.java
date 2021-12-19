@@ -11,6 +11,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -50,5 +51,19 @@ public class StudentController
         modelAndView.addObject(groupList);
         modelAndView.setViewName("/jsp/student/applyActivity.jsp");
         return modelAndView;
+    }
+    @ResponseBody
+    @RequestMapping("/participateWithNewGroup")
+    public String participateWithNewGroup(Group group)
+    {
+        int result=activityService.participateWithNewGroup(group);
+        if(result>0)
+        {
+            return "success";
+        }
+        else
+        {
+            return "fail";
+        }
     }
 }

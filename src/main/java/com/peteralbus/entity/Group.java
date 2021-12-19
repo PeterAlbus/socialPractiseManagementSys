@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * The type Group.
  * @author PeterAlbus
  */
-@TableName("group")
+@TableName("`group`")
 public class Group implements Serializable
 {
     @TableId(type= IdType.ASSIGN_ID)
