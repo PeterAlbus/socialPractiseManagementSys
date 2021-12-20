@@ -17,6 +17,10 @@ public class Participate implements Serializable
     @TableId(type= IdType.ASSIGN_ID)
     private Long participationId;
     private Long userId;
+    @TableField(exist = false)
+    private String username;
+    @TableField(exist = false)
+    private String realName;
     private Long activityId;
     private Long groupId;
     private Boolean isFinished;
@@ -132,6 +136,26 @@ public class Participate implements Serializable
     public void setAccept(Boolean accept)
     {
         isAccept = accept;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public String getRealName()
+    {
+        return realName;
+    }
+
+    public void setRealName(String realName)
+    {
+        this.realName = realName;
     }
 
     @Override

@@ -56,8 +56,7 @@ public class StudentController
         Participate participate=participateService.getByUserAndActivity(user.getUserId(), activityId);
         if(participate!=null)
         {
-            modelAndView.setViewName("redirect: /student/manageActivity?activityId="+activityId);
-            return modelAndView;
+            return new ModelAndView("redirect: /student/manageActivity?activityId="+activityId);
         }
         modelAndView.addObject("activity",activity);
         List<Group> groupList=groupService.getGroupListByActivity(activityId);
@@ -71,32 +70,59 @@ public class StudentController
         ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
+        modelAndView.addObject("userId",user.getUserId());
         Activity activity= activityService.getActivityById(activityId);
         Participate participate=participateService.getByUserAndActivity(user.getUserId(), activityId);
         if(participate==null)
         {
             throw new UnauthorizedException();
         }
-        Long memberCount=groupService.getMemberCount(participate.getGroupId());
-        if(memberCount<=activity.getMinPeople())
+        Group group=groupService.getById(participate.getGroupId());
+        Long memberCount=groupService.getMemberCount(group.getGroupId());
+        List<Participate> memberList=groupService.getGroupMember(group.getGroupId());
+        modelAndView.addObject("group",group);
+        modelAndView.addObject("memberList",memberList);
+        if(participate.getAccept())
         {
-            if(participate.getAccept())
+            if(memberCount<activity.getMinPeople())
             {
                 modelAndView.addObject("currentStatus","正在等待小组成员数量达到要求");
+                modelAndView.setViewName("/jsp/student/waitGroup.jsp");
             }
             else
             {
-                modelAndView.addObject("currentStatus","正在等待组长通过您的申请");
+                modelAndView.setViewName("/jsp/student/manageActivity.jsp");
             }
-            modelAndView.setViewName("/jsp/student/waitGroup.jsp");
         }
         else
         {
-            modelAndView.setViewName("/jsp/student/manageActivity.jsp");
+            modelAndView.addObject("currentStatus","正在等待组长通过您的申请");
+            modelAndView.setViewName("/jsp/student/waitGroup.jsp");
         }
-
         modelAndView.addObject("activity",activity);
         return modelAndView;
+    }
+    @ResponseBody
+    @RequestMapping("/acceptJoin")
+    public String acceptJoin(Long participateId)
+    {
+        int result=participateService.acceptJoin(participateId);
+        if(result<=0)
+        {
+            return "error";
+        }
+        return "success";
+    }
+    @ResponseBody
+    @RequestMapping("/refuseJoin")
+    public String refuseJoin(Long participateId)
+    {
+        int result=participateService.refuseJoin(participateId);
+        if(result<=0)
+        {
+            return "error";
+        }
+        return "success";
     }
     @ResponseBody
     @RequestMapping("/participateWithNewGroup")

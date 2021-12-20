@@ -7,6 +7,7 @@ import com.peteralbus.entity.Group;
 import com.peteralbus.entity.Participate;
 import com.peteralbus.entity.User;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,5 +59,34 @@ public class ParticipateService
         participate.setFinished(false);
         participate.setAccept(false);
         return participateDao.insert(participate);
+    }
+    public int acceptJoin(Long participateId)
+    {
+        Participate participate=participateDao.selectById(participateId);
+        Subject subject = SecurityUtils.getSubject();
+        User user=(User)subject.getPrincipal();
+        if(groupDao.selectById(participate.getGroupId()).getLeaderId().equals(user.getUserId()))
+        {
+            participate.setAccept(true);
+            return participateDao.updateById(participate);
+        }
+        else
+        {
+            throw new UnauthorizedException();
+        }
+    }
+    public int refuseJoin(Long participateId)
+    {
+        Participate participate=participateDao.selectById(participateId);
+        Subject subject = SecurityUtils.getSubject();
+        User user=(User)subject.getPrincipal();
+        if(groupDao.selectById(participate.getGroupId()).getLeaderId().equals(user.getUserId()))
+        {
+            return participateDao.deleteById(participate);
+        }
+        else
+        {
+            throw new UnauthorizedException();
+        }
     }
 }

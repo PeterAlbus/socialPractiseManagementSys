@@ -16,6 +16,8 @@
     <script src="${pageContext.request.contextPath}/vue/vue@next/vue.global.js"></script>
     <!-- 导入组件库 -->
     <script src="${pageContext.request.contextPath}/vue/element/index.full.js"></script>
+    <script src="${pageContext.request.contextPath}/vue/axios/axios.js"></script>
+    <script src="${pageContext.request.contextPath}/vue/qs.min.js"></script>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/vue/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
@@ -96,6 +98,26 @@
                                 :sub-title="currentStatus"
                         >
                         </el-result>
+                        <div>
+                            <el-descriptions title="小组信息" border>
+                                <el-descriptions-item label="小组名">{{group.groupName}}</el-descriptions-item>
+                                <el-descriptions-item label="组长姓名">{{group.leaderName}}</el-descriptions-item>
+                                <el-descriptions-item label="已加入组员数">{{group.memberCount}}</el-descriptions-item>
+                            </el-descriptions>
+                            <h4>成员信息</h4>
+                            <el-table :data="memberList" style="width: 100%" stripe>
+                                <el-table-column prop="username" label="用户名"></el-table-column>
+                                <el-table-column prop="realName" label="姓名"></el-table-column>
+                                <el-table-column align="right" label="加入状态">
+                                    <template #default="scope">
+                                        <el-button size="mini" @click="accept(scope.row.participateId)" v-if="(!scope.row.isAccept)&&user.userId==group.leaderId">通过</el-button>
+                                        <el-button size="mini" @click="refuse(scope.row.participateId)" v-if="(!scope.row.isAccept)&&user.userId==group.leaderId" type="danger">拒绝</el-button>
+                                        <el-tag type="success" v-if="scope.row.isAccept">已通过</el-tag>
+                                        <el-tag type="info" v-if="(!scope.row.isAccept)&&user.userId!=group.leaderId">审核中</el-tag>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
                     </div>
                 </el-main>
             </el-container>
@@ -113,7 +135,8 @@
                 user:{
                     username:'',
                     realName:'',
-                    avatarSrc: ''
+                    avatarSrc: '',
+                    userId:''
                 },
                 currentStatus:'${currentStatus}',
                 activity:{
@@ -136,6 +159,24 @@
                         </c:forEach>
                     ]
                 },
+                group:{
+                    groupId:'${group.getGroupId()}',
+                    groupName:'${group.getGroupName()}',
+                    leaderId:'${group.getLeaderId()}',
+                    leaderName: '${group.getLeaderName()}',
+                    memberCount: '${group.getMemberCount()}'
+                },
+                memberList:[
+                    <c:forEach items="${memberList}" var="member">
+                    {
+                        participateId:'${member.getParticipationId()}',
+                        userId:'${member.getUserId()}',
+                        username:'${member.getUsername()}',
+                        realName:'${member.getRealName()}',
+                        isAccept:${member.getAccept()}
+                    },
+                    </c:forEach>
+                ],
                 activeIndex:'3'
             }
         },
@@ -143,10 +184,71 @@
             this.user.realName='${realName}'
             this.user.username='${username}'
             this.user.avatarSrc='${avatarSrc}'
+            this.user.userId='${userId}'
         },
         methods: {
             goBack(){
                 window.history.go(-1);
+            },
+            accept(id){
+                this.$messageBox.confirm(
+                    '小组成员加入后，不可再抛弃了哦，确认通过申请？',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "get",
+                            url: "/student/acceptJoin?participateId="+id,
+                            })
+                            .then(res => {
+                                if(res.data==="success")
+                                {
+                                    location.reload();
+                                }
+                                else
+                                {
+                                    this.$message.error("出现异常，通过失败")
+                                }
+                            })
+                            .catch(res=>{
+                                this.$message.error("出现异常，通过失败")
+                            })
+                    })
+            },
+            refuse(id){
+                this.$messageBox.confirm(
+                    '确认要拒绝该同学的申请吗？',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "get",
+                            url: "/student/refuseJoin?participateId="+id,
+                        })
+                            .then(res => {
+                                if(res.data==="success")
+                                {
+                                    location.reload();
+                                }
+                                else
+                                {
+                                    this.$message.error("出现异常，拒绝失败")
+                                }
+                            })
+                            .catch(res=>{
+                                this.$message.error("出现异常，拒绝失败")
+                            })
+                    })
             }
         }
     };

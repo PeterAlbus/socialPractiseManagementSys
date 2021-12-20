@@ -21,6 +21,8 @@ public class Group implements Serializable
     private Long leaderId;
     @TableField(exist = false)
     private String leaderName;
+    @TableField(exist = false)
+    public Long memberCount;
     private Long activityId;
     @Version
     private Integer version;
@@ -128,6 +130,16 @@ public class Group implements Serializable
     public void setLeaderName(String leaderName)
     {
         this.leaderName = leaderName;
+    }
+
+    public Long getMemberCount()
+    {
+        return memberCount;
+    }
+
+    public void setMemberCount(Long memberCount)
+    {
+        this.memberCount = memberCount;
     }
 
     @Override

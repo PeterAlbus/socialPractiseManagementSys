@@ -10,6 +10,7 @@ import com.peteralbus.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +40,11 @@ public class GroupService
     }
     public Group getById(Long groupId)
     {
-        return groupDao.selectById(groupId);
+        Group group=groupDao.selectById(groupId);
+        User user=userDao.selectById(group.getLeaderId());
+        group.setLeaderName(user.getRealName());
+        group.setMemberCount(getMemberCount(groupId));
+        return group;
     }
     public Long getMemberCount(Long groupId)
     {
@@ -47,6 +52,19 @@ public class GroupService
         queryWrapper.eq("group_id",groupId);
         queryWrapper.eq("is_accept",true);
         return participateDao.selectCount(queryWrapper);
+    }
+    public List<Participate> getGroupMember(Long groupId)
+    {
+        QueryWrapper<Participate> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("group_id",groupId);
+        List<Participate> memberList=participateDao.selectList(queryWrapper);
+        for(Participate participate:memberList)
+        {
+            User user= userDao.selectById(participate.getUserId());
+            participate.setUsername(user.getUsername());
+            participate.setRealName(user.getRealName());
+        }
+        return memberList;
     }
     public int insertGroup(Group group)
     {
