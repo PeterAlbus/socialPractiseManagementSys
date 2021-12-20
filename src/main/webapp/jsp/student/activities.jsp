@@ -98,7 +98,7 @@
                                     <template #header>
                                         <div class="card-header">
                                             <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag></span>
-                                            <el-button class="button" type="text" @click="toModify(item.activityId)">管理</el-button>
+                                            <el-button class="button" type="text" @click="toManage(item.activityId)">管理</el-button>
                                         </div>
                                     </template>
                                     <h5>负责老师:<span v-for="i in item.teachers">{{i.realName}}&emsp;</span></h5>
@@ -264,6 +264,9 @@
             },
             toApply(id){
                 location.href="/student/applyActivity?activityId="+id
+            },
+            toManage(id){
+                location.href="/student/manageActivity?activityId="+id
             }
         }
     };

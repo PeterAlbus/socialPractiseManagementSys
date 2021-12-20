@@ -1,5 +1,6 @@
 package com.peteralbus.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.peteralbus.dao.GroupDao;
 import com.peteralbus.dao.ParticipateDao;
 import com.peteralbus.entity.Group;
@@ -17,6 +18,13 @@ public class ParticipateService
     ParticipateDao participateDao;
     @Autowired
     GroupDao groupDao;
+    public Participate getByUserAndActivity(Long userId,Long activityId)
+    {
+        QueryWrapper<Participate> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("activity_id",activityId);
+        return participateDao.selectOne(queryWrapper);
+    }
     public int insertParticipate(Participate participate)
     {
         return participateDao.insert(participate);

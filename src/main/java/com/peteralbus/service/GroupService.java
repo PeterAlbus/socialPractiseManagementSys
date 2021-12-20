@@ -2,8 +2,10 @@ package com.peteralbus.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.peteralbus.dao.GroupDao;
+import com.peteralbus.dao.ParticipateDao;
 import com.peteralbus.dao.UserDao;
 import com.peteralbus.entity.Group;
+import com.peteralbus.entity.Participate;
 import com.peteralbus.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ public class GroupService
     GroupDao groupDao;
     @Autowired
     UserDao userDao;
+    @Autowired
+    ParticipateDao participateDao;
     public List<Group> getGroupListByActivity(Long activityId)
     {
         QueryWrapper<Group> queryWrapper=new QueryWrapper<>();
@@ -36,6 +40,13 @@ public class GroupService
     public Group getById(Long groupId)
     {
         return groupDao.selectById(groupId);
+    }
+    public Long getMemberCount(Long groupId)
+    {
+        QueryWrapper<Participate> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("group_id",groupId);
+        queryWrapper.eq("is_accept",true);
+        return participateDao.selectCount(queryWrapper);
     }
     public int insertGroup(Group group)
     {

@@ -227,7 +227,7 @@
                             }
                             else
                             {
-                                location.href="/"
+                                location.href="/student/manageActivity?activityId="+this.activity.activityId
                             }
                         })
                     })
@@ -263,7 +263,7 @@
                             }
                             else
                             {
-                                location.href="/"
+                                location.href="/student/manageActivity?activityId="+this.activity.activityId
                             }
                         })
                     })

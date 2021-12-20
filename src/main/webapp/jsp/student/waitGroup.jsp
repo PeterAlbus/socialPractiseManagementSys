@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,12 +36,66 @@
                     <el-page-header icon="el-icon-arrow-left" :content="title" @back="goBack"></el-page-header>
                     <br/>
                     <div class="container">
-                        <el-card style="width:320px">
-                            <div style="text-align:center">
-                                <img src="${pageContext.request.contextPath}/img/2.png" alt="">
-                                <h3>A high quality UI Toolkit based on Vue.js</h3>
-                            </div>
-                        </el-card>
+                        <el-steps :active="1" finish-status="success" simple>
+                            <el-step title="申请参加" icon="el-icon-edit"></el-step>
+                            <el-step title="小组形成" icon="el-icon-s-custom"></el-step>
+                            <el-step title="上传日志" icon="el-icon-upload"></el-step>
+                            <el-step title="教师评分" icon="el-icon-picture"></el-step>
+                        </el-steps>
+                        <el-divider content-position="left">社会实践活动信息</el-divider>
+                        <div class="activity-info">
+                            <el-descriptions
+                                    title="活动情况"
+                                    :column="1"
+                                    border
+                            >
+                                <el-descriptions-item>
+                                    <template #label>
+                                        活动名称
+                                    </template>
+                                    {{activity.activityName}}
+                                </el-descriptions-item>
+                                <el-descriptions-item>
+                                    <template #label>
+                                        活动类别
+                                    </template>
+                                    {{activity.activityType}}
+                                </el-descriptions-item>
+                                <el-descriptions-item>
+                                    <template #label>
+                                        活动人数
+                                    </template>
+                                    {{activity.minPeople}}-{{activity.maxPeople}}人
+                                </el-descriptions-item>
+                                <el-descriptions-item>
+                                    <template #label>
+                                        负责老师
+                                    </template>
+                                    <span v-for="i in activity.teachers">{{i.realName}}&emsp;</span>
+                                </el-descriptions-item>
+                                <el-descriptions-item>
+                                    <template #label>
+                                        创建日期
+                                    </template>
+                                    {{activity.gmtCreate}}
+                                </el-descriptions-item>
+                            </el-descriptions>
+                            <el-descriptions :column="1" border direction="vertical">
+                                <el-descriptions-item>
+                                    <template #label>
+                                        简介
+                                    </template>
+                                    {{activity.activityIntroduction}}
+                                </el-descriptions-item>
+                            </el-descriptions>
+                        </div>
+                        <el-divider content-position="left">当前状态</el-divider>
+                        <el-result
+                                icon="info"
+                                title="您已成功提交申请"
+                                :sub-title="currentStatus"
+                        >
+                        </el-result>
                     </div>
                 </el-main>
             </el-container>
@@ -59,6 +114,27 @@
                     username:'',
                     realName:'',
                     avatarSrc: ''
+                },
+                currentStatus:'${currentStatus}',
+                activity:{
+                    activityId: '${activity.getActivityId()}',
+                    activityName: '${activity.getActivityName()}',
+                    activityType:'${activity.getActivityType()}',
+                    activityIntroduction:'${activity.getActivityIntroduction()}',
+                    minPeople:'${activity.getMinPeople()}',
+                    maxPeople:'${activity.getMaxPeople()}',
+                    gmtCreate:'${activity.getFormattedCreateDate()}',
+                    teachers:[
+                        <c:forEach items="${activity.getTeacherList()}" var="teacher">
+                        {
+                            userId:'${teacher.getUserId()}',
+                            username:'${teacher.getUsername()}',
+                            realName:'${teacher.getRealName()}',
+                            userPhone:'${teacher.getUserPhone()}',
+                            avatarSrc:'${teacher.getAvatarSrc()}'
+                        },
+                        </c:forEach>
+                    ]
                 },
                 activeIndex:'3'
             }
