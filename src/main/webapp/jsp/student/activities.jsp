@@ -91,13 +91,18 @@
                         <div class="activity-list">
                             <div class="activity-list-top">
                                 <el-input v-model="keyWord" prefix-icon="el-icon-search" placeholder="请输入活动名搜索" style="width: 50%"></el-input>
+                                <el-switch
+                                        v-model="showFinished"
+                                        active-text="显示已完成"
+                                        inactive-text="不显示已完成">
+                                </el-switch>
                             </div>
                             <el-divider content-position="left">参加的活动</el-divider>
                             <div class="activity-list-card" v-for="item in activityListResult">
                                 <el-card class="box-card" shadow="hover">
                                     <template #header>
                                         <div class="card-header">
-                                            <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag></span>
+                                            <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag><el-tag effect="dark" type="success" size="mini" v-if="item.isFinished">已完成</el-tag></span>
                                             <el-button class="button" type="text" @click="toManage(item.activityId)">管理</el-button>
                                         </div>
                                     </template>
@@ -118,7 +123,6 @@
                                     <div>
                                         <h5>负责老师:<span v-for="i in item.teachers">{{i.realName}}&emsp;</span></h5>
                                         <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
-                                        <p>{{item.activityIntroduction}}</p>
                                     </div>
                                 </el-card>
                             </div>
@@ -148,6 +152,7 @@
             return{
                 title:'社会实践活动列表',
                 keyWord:'',
+                showFinished:true,
                 user:{
                     username:'',
                     realName:'',
@@ -191,6 +196,7 @@
                 minPeople:'${activity.getMinPeople()}',
                 maxPeople:'${activity.getMaxPeople()}',
                 gmtCreate:'${activity.getFormattedCreateDate()}',
+                isFinished:${activity.getFinished()},
                 teachers:teachers
             })
             </c:forEach>
@@ -220,14 +226,10 @@
         computed:{
             activityListResult:function (){
                 let result=[];
-                if(this.keyWord==='')
-                {
-                    return this.activityList;
-                }
                 for(let i=0;i<this.activityList.length;i++)
                 {
                     let str=this.activityList[i].activityName;
-                    if(str.search(this.keyWord)!==-1)
+                    if(str.search(this.keyWord)!==-1&&(!this.activityList[i].isFinished||this.showFinished))
                     {
                         result.push(this.activityList[i]);
                     }

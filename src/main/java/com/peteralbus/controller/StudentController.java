@@ -102,6 +102,10 @@ public class StudentController
             modelAndView.addObject("currentStatus","正在等待组长通过您的申请");
             modelAndView.setViewName("/jsp/student/waitGroup.jsp");
         }
+        if(participate.getFinished())
+        {
+            modelAndView.setViewName("/jsp/student/activityResult.jsp");
+        }
         modelAndView.addObject("activity",activity);
         return modelAndView;
     }

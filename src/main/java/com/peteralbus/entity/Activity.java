@@ -23,6 +23,8 @@ public class Activity implements Serializable
     private String activityIntroduction;
     private Integer minPeople;
     private Integer maxPeople;
+    @TableField(exist = false)
+    private Boolean isFinished;
     @Version
     private Integer version;
     @TableField(fill = FieldFill.INSERT)
@@ -151,6 +153,16 @@ public class Activity implements Serializable
     public void setMaxPeople(Integer maxPeople)
     {
         this.maxPeople = maxPeople;
+    }
+
+    public Boolean getFinished()
+    {
+        return isFinished;
+    }
+
+    public void setFinished(Boolean finished)
+    {
+        isFinished = finished;
     }
 
     @Override

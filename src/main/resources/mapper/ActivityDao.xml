@@ -9,7 +9,7 @@
         where activity.is_delete=0 and user.user_id=#{userId} and user.user_id=manage.user_id and manage.activity_id=activity.activity_id and manage.is_delete=0
     </select>
     <select id="getActivityByStudent" parameterType="java.lang.Long" resultType="com.peteralbus.entity.Activity">
-        select activity.activity_id, activity_name, activity_type, activity_introduction, min_people, max_people, activity.version, activity.gmt_create, activity.gmt_modified
+        select activity.activity_id, activity_name, activity_type, activity_introduction, min_people, max_people, activity.version, activity.gmt_create, activity.gmt_modified,is_finished
         from activity,participate,user
         where user.user_id=#{userId} and activity.activity_id=participate.activity_id and user.user_id=participate.user_id and activity.is_delete=0 and participate.is_delete=0
     </select>
