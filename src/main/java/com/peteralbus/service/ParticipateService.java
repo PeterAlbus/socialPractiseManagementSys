@@ -12,13 +12,31 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * The type Participate service.
+ * @author peteralbus
+ */
 @Service
 public class ParticipateService
 {
+    /**
+     * The Participate dao.
+     */
     @Autowired
     ParticipateDao participateDao;
+    /**
+     * The Group dao.
+     */
     @Autowired
     GroupDao groupDao;
+
+    /**
+     * Gets by user and activity.
+     *
+     * @param userId     the user id
+     * @param activityId the activity id
+     * @return the by user and activity
+     */
     public Participate getByUserAndActivity(Long userId,Long activityId)
     {
         QueryWrapper<Participate> queryWrapper=new QueryWrapper<>();
@@ -26,10 +44,24 @@ public class ParticipateService
         queryWrapper.eq("activity_id",activityId);
         return participateDao.selectOne(queryWrapper);
     }
+
+    /**
+     * Insert participate int.
+     *
+     * @param participate the participate
+     * @return the int
+     */
     public int insertParticipate(Participate participate)
     {
         return participateDao.insert(participate);
     }
+
+    /**
+     * Participate with new group int.
+     *
+     * @param group the group
+     * @return the int
+     */
     public int participateWithNewGroup(Group group)
     {
         Subject subject = SecurityUtils.getSubject();
@@ -48,6 +80,13 @@ public class ParticipateService
         }
         return result;
     }
+
+    /**
+     * Participate with old group int.
+     *
+     * @param group the group
+     * @return the int
+     */
     public int participateWithOldGroup(Group group)
     {
         Subject subject = SecurityUtils.getSubject();
@@ -60,6 +99,13 @@ public class ParticipateService
         participate.setAccept(false);
         return participateDao.insert(participate);
     }
+
+    /**
+     * Accept join int.
+     *
+     * @param participateId the participate id
+     * @return the int
+     */
     public int acceptJoin(Long participateId)
     {
         Participate participate=participateDao.selectById(participateId);
@@ -75,6 +121,13 @@ public class ParticipateService
             throw new UnauthorizedException();
         }
     }
+
+    /**
+     * Refuse join int.
+     *
+     * @param participateId the participate id
+     * @return the int
+     */
     public int refuseJoin(Long participateId)
     {
         Participate participate=participateDao.selectById(participateId);

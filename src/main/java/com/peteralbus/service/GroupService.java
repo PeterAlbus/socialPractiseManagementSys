@@ -15,17 +15,34 @@ import java.util.List;
 
 /**
  * The type Group service.
+ *
  * @author peteralbus
  */
 @Service
 public class GroupService
 {
+    /**
+     * The Group dao.
+     */
     @Autowired
     GroupDao groupDao;
+    /**
+     * The User dao.
+     */
     @Autowired
     UserDao userDao;
+    /**
+     * The Participate dao.
+     */
     @Autowired
     ParticipateDao participateDao;
+
+    /**
+     * Gets group list by activity.
+     *
+     * @param activityId the activity id
+     * @return the group list by activity
+     */
     public List<Group> getGroupListByActivity(Long activityId)
     {
         QueryWrapper<Group> queryWrapper=new QueryWrapper<>();
@@ -38,6 +55,13 @@ public class GroupService
         }
         return groupList;
     }
+
+    /**
+     * Gets by id.
+     *
+     * @param groupId the group id
+     * @return the by id
+     */
     public Group getById(Long groupId)
     {
         Group group=groupDao.selectById(groupId);
@@ -46,6 +70,13 @@ public class GroupService
         group.setMemberCount(getMemberCount(groupId));
         return group;
     }
+
+    /**
+     * Gets member count.
+     *
+     * @param groupId the group id
+     * @return the member count
+     */
     public Long getMemberCount(Long groupId)
     {
         QueryWrapper<Participate> queryWrapper=new QueryWrapper<>();
@@ -53,6 +84,13 @@ public class GroupService
         queryWrapper.eq("is_accept",true);
         return participateDao.selectCount(queryWrapper);
     }
+
+    /**
+     * Gets group member.
+     *
+     * @param groupId the group id
+     * @return the group member
+     */
     public List<Participate> getGroupMember(Long groupId)
     {
         QueryWrapper<Participate> queryWrapper=new QueryWrapper<>();
@@ -66,6 +104,13 @@ public class GroupService
         }
         return memberList;
     }
+
+    /**
+     * Insert group int.
+     *
+     * @param group the group
+     * @return the int
+     */
     public int insertGroup(Group group)
     {
         return groupDao.insert(group);

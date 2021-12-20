@@ -1,12 +1,10 @@
 package com.peteralbus.controller;
 
-import com.peteralbus.entity.Activity;
-import com.peteralbus.entity.Group;
-import com.peteralbus.entity.Participate;
-import com.peteralbus.entity.User;
+import com.peteralbus.entity.*;
 import com.peteralbus.service.ActivityService;
 import com.peteralbus.service.GroupService;
 import com.peteralbus.service.ParticipateService;
+import com.peteralbus.service.RecordService;
 import com.peteralbus.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -33,6 +31,8 @@ public class StudentController
     GroupService groupService;
     @Autowired
     ParticipateService participateService;
+    @Autowired
+    RecordService recordService;
     @RequestMapping("/activities")
     public ModelAndView activities()
     {
@@ -80,6 +80,7 @@ public class StudentController
         Group group=groupService.getById(participate.getGroupId());
         Long memberCount=groupService.getMemberCount(group.getGroupId());
         List<Participate> memberList=groupService.getGroupMember(group.getGroupId());
+        modelAndView.addObject("participationId",participate.getParticipationId());
         modelAndView.addObject("group",group);
         modelAndView.addObject("memberList",memberList);
         if(participate.getAccept())
@@ -91,6 +92,8 @@ public class StudentController
             }
             else
             {
+                List<Record> recordList=recordService.selectByParticipate(participate.getParticipationId());
+                modelAndView.addObject("recordList",recordList);
                 modelAndView.setViewName("/jsp/student/manageActivity.jsp");
             }
         }
@@ -101,6 +104,18 @@ public class StudentController
         }
         modelAndView.addObject("activity",activity);
         return modelAndView;
+    }
+    @ResponseBody
+    @RequestMapping("/insertRecord")
+    public String insertRecord(Record record)
+    {
+        record.setRead(false);
+        int result= recordService.insertRecord(record);
+        if(result<=0)
+        {
+            return "error";
+        }
+        return "success";
     }
     @ResponseBody
     @RequestMapping("/acceptJoin")

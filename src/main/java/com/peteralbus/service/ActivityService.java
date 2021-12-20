@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * The type Activity service.
+ *
  * @author PeterAlbus
  */
 @Service
@@ -31,6 +32,13 @@ public class ActivityService
     private ParticipateDao participateDao;
     @Autowired
     private ManageDao manageDao;
+
+    /**
+     * Add activity int.
+     *
+     * @param activity the activity
+     * @return the int
+     */
     public int addActivity(Activity activity)
     {
         Subject subject = SecurityUtils.getSubject();
@@ -41,6 +49,14 @@ public class ActivityService
         manage.setUserId(user.getUserId());
         return manageDao.insert(manage);
     }
+
+    /**
+     * Add teacher to activity int.
+     *
+     * @param teacherId  the teacher id
+     * @param activityId the activity id
+     * @return the int
+     */
     public int addTeacherToActivity(Long teacherId,Long activityId)
     {
         Manage manage=new Manage();
@@ -48,12 +64,27 @@ public class ActivityService
         manage.setUserId(teacherId);
         return manageDao.insert(manage);
     }
+
+    /**
+     * Gets activity by id.
+     *
+     * @param activityId the activity id
+     * @return the activity by id
+     */
     public Activity getActivityById(Long activityId)
     {
         Activity activity=activityDao.selectById(activityId);
         activity.setTeacherList(activityDao.getTeacherList(activityId));
         return activity;
     }
+
+    /**
+     * Check is manage boolean.
+     *
+     * @param teacherId  the teacher id
+     * @param activityId the activity id
+     * @return the boolean
+     */
     public Boolean checkIsManage(Long teacherId,Long activityId)
     {
         QueryWrapper<Manage> queryWrapper=new QueryWrapper<Manage>();
@@ -62,6 +93,13 @@ public class ActivityService
         Manage manage=manageDao.selectOne(queryWrapper);
         return manage != null;
     }
+
+    /**
+     * Gets activity by teacher.
+     *
+     * @param teacherId the teacher id
+     * @return the activity by teacher
+     */
     public List<Activity> getActivityByTeacher(Long teacherId)
     {
         List<Activity> activityList=activityDao.getActivityByTeacher(teacherId);
@@ -72,6 +110,13 @@ public class ActivityService
         }
         return activityList;
     }
+
+    /**
+     * Gets activity by student.
+     *
+     * @param studentId the student id
+     * @return the activity by student
+     */
     public List<Activity> getActivityByStudent(Long studentId)
     {
         List<Activity> activityList=activityDao.getActivityByStudent(studentId);
@@ -82,6 +127,12 @@ public class ActivityService
         }
         return activityList;
     }
+
+    /**
+     * Gets activities.
+     *
+     * @return the activities
+     */
     public List<Activity> getActivities()
     {
         List<Activity> activityList=activityDao.selectList(null);
@@ -92,6 +143,12 @@ public class ActivityService
         }
         return activityList;
     }
+
+    /**
+     * Gets count.
+     *
+     * @return the count
+     */
     public int getCount()
     {
         return activityDao.getCount();
