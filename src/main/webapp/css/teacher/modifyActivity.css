@@ -5,6 +5,13 @@
     align-items: center;
 }
 
+.group-list-top{
+    width:95%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .button-group{
     float: right;
 }

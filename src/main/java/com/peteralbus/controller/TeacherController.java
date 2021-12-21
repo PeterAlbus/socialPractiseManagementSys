@@ -1,8 +1,10 @@
 package com.peteralbus.controller;
 
 import com.peteralbus.entity.Activity;
+import com.peteralbus.entity.Group;
 import com.peteralbus.entity.User;
 import com.peteralbus.service.ActivityService;
+import com.peteralbus.service.GroupService;
 import com.peteralbus.service.UserService;
 import com.peteralbus.util.PrincipalUtil;
 import net.bytebuddy.implementation.bytecode.Throw;
@@ -31,6 +33,8 @@ public class TeacherController
     ActivityService activityService;
     @Autowired
     UserService userService;
+    @Autowired
+    GroupService groupService;
     @RequiresRoles(value={"teacher"}, logical= Logical.OR)
     @RequestMapping("/activities")
     public ModelAndView activities()
@@ -66,7 +70,11 @@ public class TeacherController
             throw new UnauthorizedException();
         }
         Activity activity=activityService.getActivityById(activityId);
+        List<Group> groupList=groupService.getGroupListByActivity(activityId);
+        List<User> teacherList=userService.getTeacherList();
+        modelAndView.addObject("groupList",groupList);
         modelAndView.addObject("activity",activity);
+        modelAndView.addObject("teacherList",teacherList);
         modelAndView.setViewName("/jsp/teacher/modifyActivity.jsp");
         return modelAndView;
     }
@@ -76,7 +84,28 @@ public class TeacherController
     {
         try
         {
-            int result=activityService.addActivity(activity);
+            int result=activityService.updateActivity(activity);
+            if(result>0)
+            {
+                return "success";
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        catch (Exception e)
+        {
+            return "error:"+e.getMessage();
+        }
+    }
+    @ResponseBody
+    @RequestMapping("/updateActivity")
+    public String updateActivity(Activity activity)
+    {
+        try
+        {
+            int result=activityService.updateActivity(activity);
             if(result>0)
             {
                 return activity.getActivityId().toString();
@@ -93,10 +122,13 @@ public class TeacherController
     }
     @ResponseBody
     @RequestMapping("/addTeacherToActivity")
-    public String addTeacherToActivity(String teacherName,Long activityId)
+    public String addTeacherToActivity(Long userId,Long activityId)
     {
-        User user=userService.queryByUsername(teacherName);
-        int result=activityService.addTeacherToActivity(user.getUserId(),activityId);
+        if(activityService.checkIsManage(userId,activityId))
+        {
+            return "exist";
+        }
+        int result=activityService.addTeacherToActivity(userId,activityId);
         if(result>0)
         {
             return "success";

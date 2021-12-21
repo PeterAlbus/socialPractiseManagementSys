@@ -6,6 +6,7 @@
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,6 +66,12 @@
                                     </el-descriptions-item>
                                     <el-descriptions-item>
                                         <template #label>
+                                            负责老师
+                                        </template>
+                                        <span v-for="i in activity.teachers">{{i.realName}}&emsp;</span>
+                                    </el-descriptions-item>
+                                    <el-descriptions-item>
+                                        <template #label>
                                             创建日期
                                         </template>
                                         {{activity.gmtCreate}}
@@ -109,7 +116,18 @@
                     activityIntroduction:'${activity.getActivityIntroduction()}',
                     minPeople:'${activity.getMinPeople()}',
                     maxPeople:'${activity.getMaxPeople()}',
-                    gmtCreate:'${activity.getFormattedCreateDate()}'
+                    gmtCreate:'${activity.getFormattedCreateDate()}',
+                    teachers:[
+                        <c:forEach items="${activity.getTeacherList()}" var="teacher">
+                        {
+                            userId:'${teacher.getUserId()}',
+                            username:'${teacher.getUsername()}',
+                            realName:'${teacher.getRealName()}',
+                            userPhone:'${teacher.getUserPhone()}',
+                            avatarSrc:'${teacher.getAvatarSrc()}'
+                        },
+                        </c:forEach>
+                    ]
                 },
                 activeIndex:'2'
             }

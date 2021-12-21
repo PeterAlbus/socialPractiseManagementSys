@@ -49,7 +49,7 @@
                                             direction="rtl"
                                     >
                                         <div class="drawer-box">
-                                            <el-form ref="form" :rules="rules" :model="form" style="width: 80%">
+                                            <el-form ref="form" :rules="rules" :model="form" style="width: 80%" label-width="80px">
                                                 <el-form-item label="活动名称" prop="activityName">
                                                     <el-input v-model="form.activityName" autocomplete="off"></el-input>
                                                 </el-form-item>
@@ -80,17 +80,17 @@
                             <el-divider content-position="left">负责的活动</el-divider>
                             <div class="activity-list-card" v-for="item in activityListResult">
                                 <el-card class="box-card" shadow="hover">
-                                    <template #header>
-                                        <div class="card-header">
-                                            <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag></span>
-                                            <el-button class="button" type="text" @click="toModify(item.activityId)">管理</el-button>
-                                        </div>
-                                    </template>
-                                    <div>
-                                        <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
-                                        <p>{{item.activityIntroduction}}</p>
+                                    <div class="card-header">
+                                        <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag></span>
+                                        <el-button class="button" type="text" @click="toModify(item.activityId)">管理</el-button>
                                     </div>
                                 </el-card>
+                            </div>
+                            <div class="activity-list-top">
+                                <el-input v-model="keyWord1" prefix-icon="el-icon-search" placeholder="请输入活动名搜索" style="width: 50%"></el-input>
+                                <div>
+                                    <el-button type="primary" @click="showAddActivityForm=true">添加活动<i class="el-icon-document-add el-icon--right"></i></el-button>
+                                </div>
                             </div>
                             <el-divider content-position="left">所有活动</el-divider>
                             <div style="text-align: center">
@@ -159,6 +159,7 @@
                 },
                 activeIndex:'2',
                 keyWord:'',
+                keyWord1:'',
                 activityList:[],
                 allActivities:[],
                 currentPage:1,
@@ -236,14 +237,14 @@
             },
             allActivitiesResult:function (){
                 let result=[];
-                if(this.keyWord==='')
+                if(this.keyWord1==='')
                 {
                     return this.allActivities;
                 }
                 for(let i=0;i<this.allActivities.length;i++)
                 {
                     let str=this.allActivities[i].activityName;
-                    if(str.search(this.keyWord)!==-1)
+                    if(str.search(this.keyWord1)!==-1)
                     {
                         result.push(this.allActivities[i]);
                     }

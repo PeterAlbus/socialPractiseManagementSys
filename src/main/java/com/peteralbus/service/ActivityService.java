@@ -51,6 +51,17 @@ public class ActivityService
     }
 
     /**
+     * Update activity int.
+     *
+     * @param activity the activity
+     * @return the int
+     */
+    public int updateActivity(Activity activity)
+    {
+        return activityDao.updateById(activity);
+    }
+
+    /**
      * Add teacher to activity int.
      *
      * @param teacherId  the teacher id

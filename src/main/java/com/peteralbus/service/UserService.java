@@ -72,4 +72,11 @@ public class UserService
     {
         return userDao.deleteById(user);
     }
+
+    public List<User> getTeacherList()
+    {
+        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("user_class",2);
+        return userDao.selectList(queryWrapper);
+    }
 }

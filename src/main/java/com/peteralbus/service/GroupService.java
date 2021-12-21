@@ -52,6 +52,10 @@ public class GroupService
         {
             User user=userDao.selectById(group.getLeaderId());
             group.setLeaderName(user.getRealName());
+            List<Participate> memberList=this.getGroupMember(group.getGroupId());
+            group.setMemberList(memberList);
+            Long memberCount=this.getMemberCount(group.getGroupId());
+            group.setMemberCount(memberCount);
         }
         return groupList;
     }

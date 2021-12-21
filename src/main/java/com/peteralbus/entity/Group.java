@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * The type Group.
@@ -22,7 +23,9 @@ public class Group implements Serializable
     @TableField(exist = false)
     private String leaderName;
     @TableField(exist = false)
-    public Long memberCount;
+    private Long memberCount;
+    @TableField(exist = false)
+    private List<Participate> memberList;
     private Long activityId;
     @Version
     private Integer version;
@@ -140,6 +143,16 @@ public class Group implements Serializable
     public void setMemberCount(Long memberCount)
     {
         this.memberCount = memberCount;
+    }
+
+    public List<Participate> getMemberList()
+    {
+        return memberList;
+    }
+
+    public void setMemberList(List<Participate> memberList)
+    {
+        this.memberList = memberList;
     }
 
     @Override

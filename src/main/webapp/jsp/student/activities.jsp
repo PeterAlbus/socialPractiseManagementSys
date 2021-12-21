@@ -100,15 +100,10 @@
                             <el-divider content-position="left">参加的活动</el-divider>
                             <div class="activity-list-card" v-for="item in activityListResult">
                                 <el-card class="box-card" shadow="hover">
-                                    <template #header>
-                                        <div class="card-header">
-                                            <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag><el-tag effect="dark" type="success" size="mini" v-if="item.isFinished">已完成</el-tag></span>
-                                            <el-button class="button" type="text" @click="toManage(item.activityId)">管理</el-button>
-                                        </div>
-                                    </template>
-                                    <h5>负责老师:<span v-for="i in item.teachers">{{i.realName}}&emsp;</span></h5>
-                                    <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
-                                    <div>{{item.activityIntroduction}}</div>
+                                    <div class="card-header">
+                                        <span>{{item.activityName}}<el-tag size="mini">{{item.activityType}}</el-tag><el-tag effect="dark" type="success" size="mini" v-if="item.isFinished">已完成</el-tag></span>
+                                        <el-button class="button" type="text" @click="toManage(item.activityId)">管理</el-button>
+                                    </div>
                                 </el-card>
                             </div>
                             <el-divider content-position="left">所有活动</el-divider>
