@@ -11,4 +11,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface RecordDao extends BaseMapper<Record>
 {
+    /**
+     * Restore int.
+     *
+     * @param participationId the participation id
+     * @return the int
+     */
+    int restore(Long participationId);
 }

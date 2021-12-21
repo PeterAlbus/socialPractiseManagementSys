@@ -202,7 +202,7 @@
             },
             newGroup(){
                 this.$messageBox.confirm(
-                    '参与社会实践活动后不可更改小组，不可退出，确认申请？',
+                    '担任组长意味着责任，若还有组员，不可退出活动，确认申请？',
                     '警告',
                     {
                         confirmButtonText: '确认',
@@ -236,7 +236,7 @@
             },
             joinGroup(id){
                 this.$messageBox.confirm(
-                    '参与社会实践活动后不可更改小组，不可退出，确认申请？',
+                    '确认申请该小组参与社会实践活动？',
                     '警告',
                     {
                         confirmButtonText: '确认',

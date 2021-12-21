@@ -31,3 +31,7 @@ body{
     align-items: center;
     justify-content:center;
 }
+
+.el-table .warning-row {
+    --el-table-tr-bg-color: var(--el-color-warning-lighter);
+}

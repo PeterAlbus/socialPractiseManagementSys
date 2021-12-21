@@ -58,9 +58,9 @@
                       border
               >
                 <template #extra>
-                  <el-button type="success" size="mini" @click="dialogVisible=true" v-if="!isScored">评分</el-button>
+                  <el-button type="success" size="mini" @click="dialogVisible=true" v-if="!isScored&&(activity.minPeople<=group.memberCount)">评分</el-button>&emsp;
                   <el-tag type="success" v-if="isFinished">该小组已完成社会实践</el-tag>
-                  <el-tag type="danger" v-if="activity.minPeople>group.memberCount">该小组人数尚未达标</el-tag>
+                  <el-tag type="danger" v-if="activity.minPeople>group.memberCount" size="small">该小组人数尚未达标</el-tag>
                   <el-link href="#record" type="primary">日志管理<i class="el-icon-arrow-down"></i></el-link>&emsp;
                   <el-link href="#groupMember" type="primary">小组成员<i class="el-icon-arrow-down"></i></el-link>
                 </template>

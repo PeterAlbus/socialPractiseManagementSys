@@ -11,4 +11,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ParticipateDao extends BaseMapper<Participate>
 {
+    /**
+     * Restore int.
+     *
+     * @param activityId the activity id
+     * @return the int
+     */
+    int restore(Long activityId);
 }

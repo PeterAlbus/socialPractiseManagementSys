@@ -57,7 +57,13 @@ public class ActivityService
      */
     public int updateActivity(Activity activity)
     {
-        return activityDao.updateById(activity);
+        Activity old=activityDao.selectById(activity.getActivityId());
+        old.setActivityName(activity.getActivityName());
+        old.setActivityType(activity.getActivityType());
+        old.setActivityIntroduction(activity.getActivityIntroduction());
+        old.setMaxPeople(activity.getMaxPeople());
+        old.setMinPeople(activity.getMinPeople());
+        return activityDao.updateById(old);
     }
 
     /**
@@ -184,6 +190,28 @@ public class ActivityService
         groupQueryWrapper.eq("activity_id",activityId);
         result=groupDao.delete(groupQueryWrapper);
         result=activityDao.deleteById(activityId);
+        return result;
+    }
+
+    public List<Activity> adminActivityList()
+    {
+        return activityDao.adminActivityList();
+    }
+
+    public int restore(Long activityId)
+    {
+        int result=0;
+        result=activityDao.restore(activityId);
+        manageDao.restore(activityId);
+        groupDao.restore(activityId);
+        participateDao.restore(activityId);
+        QueryWrapper<Participate> participateQueryWrapper=new QueryWrapper<>();
+        participateQueryWrapper.eq("activity_id",activityId);
+        List<Participate> participateList=participateDao.selectList(participateQueryWrapper);
+        for(Participate participate:participateList)
+        {
+            recordDao.restore(participate.getParticipationId());
+        }
         return result;
     }
 }
