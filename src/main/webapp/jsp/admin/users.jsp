@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: peteralbus
   Date: 2021/12/21
-  Time: 18:13
+  Time: 20:04
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>社会实践活动管理</title>
+    <title>用户管理</title>
     <!-- 导入 Vue 3 -->
     <script src="${pageContext.request.contextPath}/vue/vue@next/vue.global.js"></script>
     <!-- 导入组件库 -->
@@ -41,7 +41,7 @@
                         <el-pagination
                                 background
                                 layout="total, sizes ,prev, pager, next, jumper"
-                                :total="activityListResult.length"
+                                :total="userListResult.length"
                                 :page-sizes="[5, 10, 20, 40]"
                                 v-model:page-size="pageSize"
                                 v-model:current-page="currentPage">
@@ -49,22 +49,17 @@
                     </div>
                     <div>
                         <el-table
-                                :data="currentPageActivities"
+                                :data="currentPageUsers"
                                 style="width: 100%"
                         >
-                            <el-table-column label="活动ID" fixed width="250">
-                                <template #default="scope">
-                                    {{scope.row.activityId}}
-                                    <el-tag v-if="scope.row.isDelete=='1'" type="danger" size="mini">已删除</el-tag>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="activityName" label="活动名" width="250"></el-table-column>
-                            <el-table-column prop="activityType" label="活动类型"></el-table-column>
-                            <el-table-column label="活动介绍">
+                            <el-table-column prop="userId" label="用户ID" fixed width="250"></el-table-column>
+                            <el-table-column prop="username" label="用户名" width="200"></el-table-column>
+                            <el-table-column prop="realName" label="姓名" width="200"></el-table-column>
+                            <el-table-column label="头像">
                                 <template #default="scope">
                                     <el-popover effect="light" trigger="hover" placement="top">
                                         <template #default>
-                                            <p>{{ scope.row.activityIntroduction }}</p>
+                                            <img :src="scope.row.avatarSrc" alt="" style="width: 150px;height: 150px"/>
                                         </template>
                                         <template #reference>
                                             <el-tag size="medium">悬浮查看</el-tag>
@@ -72,19 +67,18 @@
                                     </el-popover>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="minPeople" label="最小人数"></el-table-column>
-                            <el-table-column prop="maxPeople" label="最大人数"></el-table-column>
+                            <el-table-column prop="userPhone" label="手机号" width="200"></el-table-column>
+                            <el-table-column prop="userClass" label="用户类别"></el-table-column>
+                            <el-table-column prop="userSalt" label="加密盐值"></el-table-column>
                             <el-table-column prop="version" label="版本"></el-table-column>
                             <el-table-column prop="gmtCreate" label="创建时间" width="250"></el-table-column>
                             <el-table-column prop="gmtModified" label="上次更改" width="250"></el-table-column>
-                            <el-table-column prop="isDelete" label="是否删除"></el-table-column>
                             <el-table-column align="right" fixed="right" width="100">
                                 <template #header>
-                                    <el-input v-model="keyWord" size="mini" placeholder="搜索活动名"></el-input>
+                                    <el-input v-model="keyWord" size="mini" placeholder="搜索用户"></el-input>
                                 </template>
                                 <template #default="scope">
-                                    <el-button size="mini" @click="restore(scope.row.activityId)" v-if="scope.row.isDelete=='1'" type="success">恢复</el-button>
-                                    <el-button size="mini" @click="deleteAct(scope.row.activityId)" v-if="scope.row.isDelete!='1'" type="danger">删除</el-button>
+                                    <el-button size="mini" @click="resetPassword(scope.row.userId)" type="danger">重置密码</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -101,7 +95,7 @@
     const App = {
         data() {
             return{
-                title:'社会实践活动管理',
+                title:'用户',
                 user:{
                     username:'',
                     realName:'',
@@ -110,23 +104,25 @@
                 keyWord:'',
                 currentPage:1,
                 pageSize:10,
-                activityList:[
-                    <c:forEach items="${activityList}" var="activity">
+                userList:[
+                    <c:forEach items="${userList}" var="user">
                     {
-                        activityId: '${activity.getActivityId()}',
-                        activityName: '${activity.getActivityName()}',
-                        activityType:'${activity.getActivityType()}',
-                        activityIntroduction:'${activity.getActivityIntroduction()}',
-                        minPeople:'${activity.getMinPeople()}',
-                        maxPeople:'${activity.getMaxPeople()}',
-                        version:'${activity.getVersion()}',
-                        gmtCreate:'${activity.getFormattedCreateDate()}',
-                        gmtModified:'${activity.getGmtModified()}',
-                        isDelete:'${activity.getIsDelete()}'
+                        userId: '${user.getUserId()}',
+                        username: '${user.getUsername()}',
+                        password:'${user.getPassword()}',
+                        realName:'${user.getRealName()}',
+                        userPhone:'${user.getUserPhone()}',
+                        avatarSrc:'${user.getAvatarSrc()}',
+                        userClass: '${user.getUserClass()}',
+                        userSalt:'${user.getUserSalt()}',
+                        version:'${user.getVersion()}',
+                        gmtCreate:'${user.getGmtCreate()}',
+                        gmtModified:'${user.getGmtModified()}',
+                        isDelete:'${user.getIsDelete()}'
                     },
                     </c:forEach>
                 ],
-                activeIndex:'4'
+                activeIndex:'5'
             }
         },
         mounted(){
@@ -145,9 +141,9 @@
             goBack(){
                 window.history.go(-1);
             },
-            restore(id){
+            resetPassword(id){
                 this.$messageBox.confirm(
-                    '确认要恢复这个被删除的社会实践活动吗？',
+                    '确认要重置用户密码为123456吗？',
                     '警告',
                     {
                         confirmButtonText: '确认',
@@ -158,66 +154,40 @@
                     .then(() => {
                         axios({
                             method: "get",
-                            url: "/admin/restoreActivity?activityId="+id,
+                            url: "/admin/resetPassword?userId="+id,
                         }).then(res=>{
                             if(res.data==="error")
                             {
-                                this.$message.error('恢复失败!')
+                                this.$message.error('重置失败!')
                             }
                             else
                             {
-                                location.reload()
-                            }
-                        })
-                    })
-            },
-            deleteAct(id){
-                this.$messageBox.confirm(
-                    '确认要删除社会实践活动吗,请与老师联系确认！',
-                    '警告',
-                    {
-                        confirmButtonText: '确认',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    }
-                )
-                    .then(() => {
-                        axios({
-                            method: "get",
-                            url: "/teacher/deleteActivity?activityId="+id,
-                        }).then(res=>{
-                            if(res.data==="error")
-                            {
-                                this.$message.error('删除失败!')
-                            }
-                            else
-                            {
-                                location.reload()
+                                this.$message.success('重置成功!')
                             }
                         })
                     })
             }
         },
         computed:{
-            activityListResult:function (){
+            userListResult:function (){
                 let result=[];
                 if(this.keyWord==='')
                 {
-                    return this.activityList;
+                    return this.userList;
                 }
-                for(let i=0;i<this.activityList.length;i++)
+                for(let i=0;i<this.userList.length;i++)
                 {
-                    let str=this.activityList[i].activityName;
-                    let str_leader=this.activityList[i].activityIntroduction;
+                    let str=this.userList[i].realName;
+                    let str_leader=this.userList[i].username;
                     if(str.search(this.keyWord)!==-1||str_leader.search(this.keyWord)!==-1)
                     {
-                        result.push(this.activityList[i]);
+                        result.push(this.userList[i]);
                     }
                 }
                 return result;
             },
-            currentPageActivities:function (){
-                return this.activityListResult.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+            currentPageUsers:function (){
+                return this.userListResult.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
             }
         }
     };

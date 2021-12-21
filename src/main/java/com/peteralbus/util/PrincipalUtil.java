@@ -1,13 +1,22 @@
 package com.peteralbus.util;
 
+import com.peteralbus.entity.Message;
 import com.peteralbus.entity.User;
+import com.peteralbus.service.MessageService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
  * The type Principal util.
+ * @author peteralbus
  */
+@Component
 public class PrincipalUtil
 {
     /**

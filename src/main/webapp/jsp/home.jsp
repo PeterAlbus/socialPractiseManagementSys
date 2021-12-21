@@ -6,6 +6,7 @@
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,6 +67,13 @@
             this.user.realName='${realName}'
             this.user.username='${username}'
             this.user.avatarSrc='${avatarSrc}'
+            <c:if test="${newMessageList.size()!=0}">
+            this.$notify.info({
+                title: '有新消息:${newMessageList.get(0).getMessageTitle()}',
+                message: '${newMessageList.get(0).getMessageContent()}',
+                offset: 100,
+            })
+            </c:if>
         },
         methods: {
             goBack(){

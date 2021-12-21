@@ -1,10 +1,7 @@
 package com.peteralbus.controller;
 
 import com.peteralbus.entity.*;
-import com.peteralbus.service.ActivityService;
-import com.peteralbus.service.GroupService;
-import com.peteralbus.service.ParticipateService;
-import com.peteralbus.service.RecordService;
+import com.peteralbus.service.*;
 import com.peteralbus.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -27,6 +24,8 @@ import java.util.Map;
 public class StudentController
 {
     @Autowired
+    MessageService messageService;
+    @Autowired
     ActivityService activityService;
     @Autowired
     GroupService groupService;
@@ -34,10 +33,17 @@ public class StudentController
     ParticipateService participateService;
     @Autowired
     RecordService recordService;
+    private ModelAndView basicModelAndView()
+    {
+        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        modelAndView.addObject("messageCount",messageService.getNewMessageCount());
+        modelAndView.addObject("newMessageList",messageService.getNewMessage());
+        return modelAndView;
+    }
     @RequestMapping("/activities")
     public ModelAndView activities()
     {
-        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        ModelAndView modelAndView=this.basicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
         List<Activity> activityList=activityService.getActivityByStudent(user.getUserId());
@@ -50,7 +56,7 @@ public class StudentController
     @RequestMapping("/applyActivity")
     public ModelAndView applyActivity(Long activityId)
     {
-        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        ModelAndView modelAndView=this.basicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
         Activity activity= activityService.getActivityById(activityId);
@@ -68,7 +74,7 @@ public class StudentController
     @RequestMapping("/manageActivity")
     public ModelAndView manageActivity(Long activityId)
     {
-        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        ModelAndView modelAndView=this.basicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
         Activity activity= activityService.getActivityById(activityId);

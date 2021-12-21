@@ -172,6 +172,13 @@
             this.user.realName='${realName}'
             this.user.username='${username}'
             this.user.avatarSrc='${avatarSrc}'
+            <c:if test="${newMessageList.size()!=0}">
+            this.$notify.info({
+                title: '有新消息:${newMessageList.get(0).getMessageTitle()}',
+                message: '${newMessageList.get(0).getMessageContent()}',
+                offset: 100,
+            })
+            </c:if>
             let teachers
             <c:forEach items="${activityList}" var="activity">
             teachers=[]

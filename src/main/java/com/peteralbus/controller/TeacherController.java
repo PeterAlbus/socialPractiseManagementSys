@@ -38,11 +38,20 @@ public class TeacherController
     ScoreGroupService scoreGroupService;
     @Autowired
     ScoreStuService scoreStuService;
+    @Autowired
+    MessageService messageService;
+    private ModelAndView basicModelAndView()
+    {
+        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        modelAndView.addObject("messageCount",messageService.getNewMessageCount());
+        modelAndView.addObject("newMessageList",messageService.getNewMessage());
+        return modelAndView;
+    }
     @RequiresRoles(value={"teacher"}, logical= Logical.OR)
     @RequestMapping("/activities")
     public ModelAndView activities()
     {
-        ModelAndView modelAndView= PrincipalUtil.getBasicModelAndView();
+        ModelAndView modelAndView=this.basicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
         List<Activity> activityList=activityService.getActivityByTeacher(user.getUserId());
@@ -56,7 +65,7 @@ public class TeacherController
     @RequestMapping("/activityDetail")
     public ModelAndView activityDetail(Long activityId)
     {
-        ModelAndView modelAndView= PrincipalUtil.getBasicModelAndView();
+        ModelAndView modelAndView=this.basicModelAndView();
         Activity activity=activityService.getActivityById(activityId);
         modelAndView.addObject("activity",activity);
         modelAndView.setViewName("/jsp/teacher/activityDetail.jsp");
@@ -65,7 +74,7 @@ public class TeacherController
     @RequestMapping("/modifyActivity")
     public ModelAndView modifyActivity(Long activityId)
     {
-        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        ModelAndView modelAndView=this.basicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
         if(!activityService.checkIsManage(user.getUserId(), activityId))
@@ -84,7 +93,7 @@ public class TeacherController
     @RequestMapping("/manageGroup")
     public ModelAndView manageGroup(Long groupId)
     {
-        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        ModelAndView modelAndView=this.basicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
         Group group=groupService.getById(groupId);

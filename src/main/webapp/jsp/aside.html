@@ -27,6 +27,12 @@
             <template #title>活动列表</template>
         </el-menu-item>
     </shiro:hasRole>
+    <shiro:hasRole name="admin">
+        <el-menu-item index="5" onclick="location.href='/admin/users'">
+            <i class="el-icon-user"></i>
+            <template #title>用户列表</template>
+        </el-menu-item>
+    </shiro:hasRole>
     <el-menu-item index="9">
         <i class="el-icon-document"></i>
         <template #title>Navigator Three</template>

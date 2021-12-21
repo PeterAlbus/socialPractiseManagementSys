@@ -79,4 +79,14 @@ public class UserService
         queryWrapper.eq("user_class",2);
         return userDao.selectList(queryWrapper);
     }
+
+    public List<User> getUserList()
+    {
+        return userDao.selectList(null);
+    }
+
+    public User queryById(Long userId)
+    {
+        return userDao.selectById(userId);
+    }
 }
