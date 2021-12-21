@@ -106,7 +106,20 @@
                                     </div>
                                 </el-card>
                             </div>
+                            <div class="activity-list-top">
+                                <el-input v-model="keyWord1" prefix-icon="el-icon-search" placeholder="请输入活动名搜索" style="width: 50%"></el-input>
+                            </div>
                             <el-divider content-position="left">所有活动</el-divider>
+                            <div style="text-align: center">
+                                <el-pagination
+                                        background
+                                        layout="total, sizes ,prev, pager, next, jumper"
+                                        :total="allActivitiesResult.length"
+                                        :page-sizes="[5, 10, 20, 40]"
+                                        v-model:page-size="pageSize"
+                                        v-model:current-page="currentPage">
+                                </el-pagination>
+                            </div>
                             <div class="activity-list-card" v-for="(item,index) in currentPageAllActivities">
                                 <el-card class="box-card" shadow="hover">
                                     <template #header>
@@ -120,16 +133,6 @@
                                         <p>要求人数:{{item.minPeople}}-{{item.maxPeople}}人</p>
                                     </div>
                                 </el-card>
-                            </div>
-                            <div style="text-align: center">
-                                <el-pagination
-                                        background
-                                        layout="total, sizes ,prev, pager, next, jumper"
-                                        :total="allActivitiesResult.length"
-                                        :page-sizes="[5, 10, 20, 40]"
-                                        v-model:page-size="pageSize"
-                                        v-model:current-page="currentPage">
-                                </el-pagination>
                             </div>
                         </div>
                     </div>
@@ -147,6 +150,7 @@
             return{
                 title:'社会实践活动列表',
                 keyWord:'',
+                keyWord1: '',
                 showFinished:true,
                 user:{
                     username:'',
@@ -233,14 +237,14 @@
             },
             allActivitiesResult:function (){
                 let result=[];
-                if(this.keyWord==='')
+                if(this.keyWord1==='')
                 {
                     return this.allActivities;
                 }
                 for(let i=0;i<this.allActivities.length;i++)
                 {
                     let str=this.allActivities[i].activityName;
-                    if(str.search(this.keyWord)!==-1)
+                    if(str.search(this.keyWord1)!==-1)
                     {
                         result.push(this.allActivities[i]);
                     }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Student controller.
@@ -70,7 +71,6 @@ public class StudentController
         ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
-        modelAndView.addObject("userId",user.getUserId());
         Activity activity= activityService.getActivityById(activityId);
         Participate participate=participateService.getByUserAndActivity(user.getUserId(), activityId);
         if(participate==null)
@@ -104,6 +104,8 @@ public class StudentController
         }
         if(participate.getFinished())
         {
+            Map<String,Double> map=groupService.getScore(group.getGroupId());
+            modelAndView.addObject("score",map);
             modelAndView.setViewName("/jsp/student/activityResult.jsp");
         }
         modelAndView.addObject("activity",activity);
@@ -174,6 +176,28 @@ public class StudentController
         else
         {
             return "error";
+        }
+    }
+    @ResponseBody
+    @RequestMapping("/deleteParticipate")
+    public String deleteActivity(Long participationId)
+    {
+        try
+        {
+            int result=participateService.deleteParticipate(participationId);
+            if(result>0)
+            {
+                return "success";
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return "error:"+e.getMessage();
         }
     }
 }

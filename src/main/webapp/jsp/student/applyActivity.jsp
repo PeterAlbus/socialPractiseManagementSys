@@ -121,7 +121,8 @@
                                                 <el-input v-model="keyWord" size="mini" placeholder="搜索姓名/组名"></el-input>
                                             </template>
                                             <template #default="scope">
-                                                <el-button size="mini" @click="joinGroup(scope.row.groupId)">加入</el-button>
+                                                <el-button size="mini" @click="joinGroup(scope.row.groupId)" v-if="!scope.row.isFinished">加入</el-button>
+                                                <el-tag type="success" v-if="scope.row.isFinished" size="small">该小组已完成</el-tag>
                                             </template>
                                         </el-table-column>
                                     </el-table>
@@ -181,6 +182,7 @@
                         groupName:'${group.getGroupName()}',
                         leaderId:'${group.getLeaderId()}',
                         leaderName:'${group.getLeaderName()}',
+                        isFinished:${group.getFinished()},
                         gmtCreate:'${group.getFormattedCreateDate()}'
                     },
                     </c:forEach>

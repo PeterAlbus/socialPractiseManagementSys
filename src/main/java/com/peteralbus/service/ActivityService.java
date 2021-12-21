@@ -1,10 +1,7 @@
 package com.peteralbus.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.peteralbus.dao.ActivityDao;
-import com.peteralbus.dao.GroupDao;
-import com.peteralbus.dao.ManageDao;
-import com.peteralbus.dao.ParticipateDao;
+import com.peteralbus.dao.*;
 import com.peteralbus.entity.*;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.shiro.SecurityUtils;
@@ -32,6 +29,8 @@ public class ActivityService
     private ParticipateDao participateDao;
     @Autowired
     private ManageDao manageDao;
+    @Autowired
+    private RecordDao recordDao;
 
     /**
      * Add activity int.
@@ -163,5 +162,28 @@ public class ActivityService
     public int getCount()
     {
         return activityDao.getCount();
+    }
+
+    public int deleteActivity(Long activityId)
+    {
+        int result=0;
+        QueryWrapper<Manage> manageQueryWrapper=new QueryWrapper<>();
+        manageQueryWrapper.eq("activity_id",activityId);
+        result=manageDao.delete(manageQueryWrapper);
+        QueryWrapper<Participate> participateQueryWrapper=new QueryWrapper<>();
+        participateQueryWrapper.eq("activity_id",activityId);
+        List<Participate> participateList=participateDao.selectList(participateQueryWrapper);
+        for(Participate participate:participateList)
+        {
+            QueryWrapper<Record> recordQueryWrapper=new QueryWrapper<>();
+            recordQueryWrapper.eq("participation_id",participate.getParticipationId());
+            result=recordDao.delete(recordQueryWrapper);
+        }
+        result=participateDao.delete(participateQueryWrapper);
+        QueryWrapper<Group> groupQueryWrapper=new QueryWrapper<>();
+        groupQueryWrapper.eq("activity_id",activityId);
+        result=groupDao.delete(groupQueryWrapper);
+        result=activityDao.deleteById(activityId);
+        return result;
     }
 }

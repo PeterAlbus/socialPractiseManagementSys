@@ -26,6 +26,8 @@ public class Group implements Serializable
     private Long memberCount;
     @TableField(exist = false)
     private List<Participate> memberList;
+    @TableField(exist = false)
+    private Boolean isFinished;
     private Long activityId;
     @Version
     private Integer version;
@@ -153,6 +155,16 @@ public class Group implements Serializable
     public void setMemberList(List<Participate> memberList)
     {
         this.memberList = memberList;
+    }
+
+    public Boolean getFinished()
+    {
+        return isFinished;
+    }
+
+    public void setFinished(Boolean finished)
+    {
+        isFinished = finished;
     }
 
     @Override

@@ -3,14 +3,18 @@ package com.peteralbus.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.peteralbus.dao.GroupDao;
 import com.peteralbus.dao.ParticipateDao;
+import com.peteralbus.dao.RecordDao;
 import com.peteralbus.entity.Group;
 import com.peteralbus.entity.Participate;
+import com.peteralbus.entity.Record;
 import com.peteralbus.entity.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * The type Participate service.
@@ -29,6 +33,9 @@ public class ParticipateService
      */
     @Autowired
     GroupDao groupDao;
+
+    @Autowired
+    RecordDao recordDao;
 
     /**
      * Gets by user and activity.
@@ -141,5 +148,22 @@ public class ParticipateService
         {
             throw new UnauthorizedException();
         }
+    }
+
+    public int deleteParticipate(Long participationId)
+    {
+        Participate participate=participateDao.selectById(participationId);
+        Group group=groupDao.selectById(participate.getGroupId());
+        QueryWrapper<Participate> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("group_id",group.getGroupId());
+        Long count=participateDao.selectCount(queryWrapper);
+        if(group.getLeaderId().equals(participate.getUserId())&&count>=2)
+        {
+            return 0;
+        }
+        QueryWrapper<Record> recordQueryWrapper=new QueryWrapper<>();
+        recordQueryWrapper.eq("participation_id",participate.getParticipationId());
+        recordDao.delete(recordQueryWrapper);
+        return participateDao.deleteById(participationId);
     }
 }

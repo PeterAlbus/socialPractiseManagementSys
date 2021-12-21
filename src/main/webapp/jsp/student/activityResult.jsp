@@ -52,8 +52,17 @@
                                     sub-title="恭喜你完成了社会实践活动！"
                             >
                                 <template #extra>
-                                    小组评分：<br/>
-                                    个人评分：
+                                    <div v-for="item in score">
+                                        {{item.key}}
+                                        <el-rate
+                                                v-model="item.value"
+                                                disabled
+                                                show-score
+                                                text-color="#ff9900"
+                                                score-template="{value} 分"
+                                        >
+                                        </el-rate>
+                                    </div>
                                 </template>
                             </el-result>
                         </div>
@@ -158,6 +167,14 @@
                     avatarSrc: '',
                     userId:''
                 },
+                score:[
+                    <c:forEach items="${score}" var="item">
+                    {
+                        key:'${item.key}',
+                        value:${item.value},
+                    },
+                    </c:forEach>
+                ],
                 form:{
                     participationId:'${participationId}',
                     recordTitle:'',

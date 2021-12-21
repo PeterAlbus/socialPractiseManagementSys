@@ -52,6 +52,7 @@
                                     border
                             >
                                 <template #extra>
+                                    <el-link type="primary" @click="deleteParticipate">退出小组</el-link>&emsp;
                                     <el-link href="#record" type="primary">日志管理<i class="el-icon-arrow-down"></i></el-link>&emsp;
                                     <el-link href="#groupMember" type="primary">小组成员管理<i class="el-icon-arrow-down"></i></el-link>
                                 </template>
@@ -112,7 +113,7 @@
                         <el-timeline>
                             <el-timeline-item :timestamp="item.gmtCreate" placement="top" v-for="item in recordList">
                                 <el-card>
-                                    <h4>{{item.recordTitle}}</h4>
+                                    <h4>{{item.recordTitle}}<el-tag type="warning" v-if="!item.isRead">未读</el-tag></h4>
                                     <p>{{item.recordContent}}</p>
                                 </el-card>
                             </el-timeline-item>
@@ -168,7 +169,8 @@
                     {
                         recordTitle:'${record.getRecordTitle()}',
                         recordContent:'${record.getRecordContent()}',
-                        gmtCreate:'${record.getFormattedCreateDate()}'
+                        gmtCreate:'${record.getFormattedCreateDate()}',
+                        isRead:${record.getRead()},
                     },
                     </c:forEach>
                 ],
@@ -313,6 +315,36 @@
                                 else
                                 {
                                     this.$message.error("出现异常，提交失败")
+                                }
+                            })
+                            .catch(res=>{
+                                this.$message.error("出现异常，提交失败")
+                            })
+                    })
+            },
+            deleteParticipate(){
+                this.$messageBox.confirm(
+                    '确认退出吗？你填写的活动记录将消失！',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "get",
+                            url: "/student/deleteParticipate?participationId="+this.form.participationId,
+                        })
+                            .then(res => {
+                                if(res.data==="success")
+                                {
+                                    location.href="/student/activities"
+                                }
+                                else
+                                {
+                                    this.$message.error("组长在组员没有退出时，不能退出社会实践活动！")
                                 }
                             })
                             .catch(res=>{

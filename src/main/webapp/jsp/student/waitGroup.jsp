@@ -51,6 +51,9 @@
                                     :column="1"
                                     border
                             >
+                                <template #extra>
+                                    <el-link type="primary" @click="deleteParticipate">退出小组</el-link>&emsp;
+                                </template>
                                 <el-descriptions-item>
                                     <template #label>
                                         活动名称
@@ -138,6 +141,7 @@
                     avatarSrc: '',
                     userId:''
                 },
+                participationId:'${participationId}',
                 currentStatus:'${currentStatus}',
                 activity:{
                     activityId: '${activity.getActivityId()}',
@@ -247,6 +251,36 @@
                             })
                             .catch(res=>{
                                 this.$message.error("出现异常，拒绝失败")
+                            })
+                    })
+            },
+            deleteParticipate(){
+                this.$messageBox.confirm(
+                    '确认退出吗？你填写的活动记录将消失！',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "get",
+                            url: "/student/deleteParticipate?participationId="+this.participationId,
+                        })
+                            .then(res => {
+                                if(res.data==="success")
+                                {
+                                    location.href="/student/activities";
+                                }
+                                else
+                                {
+                                    this.$message.error("组长在组员没有退出时，不能退出社会实践活动！")
+                                }
+                            })
+                            .catch(res=>{
+                                this.$message.error("出现异常，提交失败")
                             })
                     })
             }

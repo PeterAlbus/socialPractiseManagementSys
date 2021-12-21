@@ -1,11 +1,7 @@
 package com.peteralbus.controller;
 
-import com.peteralbus.entity.Activity;
-import com.peteralbus.entity.Group;
-import com.peteralbus.entity.User;
-import com.peteralbus.service.ActivityService;
-import com.peteralbus.service.GroupService;
-import com.peteralbus.service.UserService;
+import com.peteralbus.entity.*;
+import com.peteralbus.service.*;
 import com.peteralbus.util.PrincipalUtil;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.shiro.SecurityUtils;
@@ -20,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Teacher controller.
@@ -35,6 +32,12 @@ public class TeacherController
     UserService userService;
     @Autowired
     GroupService groupService;
+    @Autowired
+    RecordService recordService;
+    @Autowired
+    ScoreGroupService scoreGroupService;
+    @Autowired
+    ScoreStuService scoreStuService;
     @RequiresRoles(value={"teacher"}, logical= Logical.OR)
     @RequestMapping("/activities")
     public ModelAndView activities()
@@ -78,13 +81,34 @@ public class TeacherController
         modelAndView.setViewName("/jsp/teacher/modifyActivity.jsp");
         return modelAndView;
     }
+    @RequestMapping("/manageGroup")
+    public ModelAndView manageGroup(Long groupId)
+    {
+        ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
+        Subject subject = SecurityUtils.getSubject();
+        User user=(User)subject.getPrincipal();
+        Group group=groupService.getById(groupId);
+        Activity activity= activityService.getActivityById(group.getActivityId());
+        List<Participate> memberList=groupService.getGroupMember(group.getGroupId());
+        List<Record> recordList=recordService.selectByGroup(groupId);
+        modelAndView.addObject("group",group);
+        modelAndView.addObject("memberList",memberList);
+        modelAndView.addObject("recordList",recordList);
+        modelAndView.addObject("activity",activity);
+        modelAndView.addObject("isFinished",memberList.get(0).getFinished());
+        modelAndView.addObject("isScored",scoreGroupService.getScored(user.getUserId(),groupId));
+        Map<String,Double> map=groupService.getScore(groupId);
+        modelAndView.addObject("score",map);
+        modelAndView.setViewName("/jsp/teacher/manageGroup.jsp");
+        return modelAndView;
+    }
     @ResponseBody
     @RequestMapping("/addActivity")
     public String addActivity(Activity activity)
     {
         try
         {
-            int result=activityService.updateActivity(activity);
+            int result=activityService.addActivity(activity);
             if(result>0)
             {
                 return "success";
@@ -121,6 +145,27 @@ public class TeacherController
         }
     }
     @ResponseBody
+    @RequestMapping("/deleteActivity")
+    public String deleteActivity(Long activityId)
+    {
+        try
+        {
+            int result=activityService.deleteActivity(activityId);
+            if(result>0)
+            {
+                return "success";
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        catch (Exception e)
+        {
+            return "error:"+e.getMessage();
+        }
+    }
+    @ResponseBody
     @RequestMapping("/addTeacherToActivity")
     public String addTeacherToActivity(Long userId,Long activityId)
     {
@@ -129,6 +174,43 @@ public class TeacherController
             return "exist";
         }
         int result=activityService.addTeacherToActivity(userId,activityId);
+        if(result>0)
+        {
+            return "success";
+        }
+        return "error";
+    }
+    @ResponseBody
+    @RequestMapping("/setRead")
+    public String setRead(Long recordId)
+    {
+        int result= recordService.setRead(recordId);
+        if(result>0)
+        {
+            return "success";
+        }
+        return "error";
+    }
+    @ResponseBody
+    @RequestMapping("/scoreStu")
+    public String scoreStu(ScoreStu scoreStu)
+    {
+        int result=scoreStuService.insert(scoreStu);
+        if(result>0)
+        {
+            return "success";
+        }
+        return "error";
+    }
+    @ResponseBody
+    @RequestMapping("/scoreGroup")
+    public String scoreGroup(ScoreGroup scoreGroup)
+    {
+        if(scoreGroupService.getScored(scoreGroup.getTeacherId(),scoreGroup.getGroupId()))
+        {
+            return "error";
+        }
+        int result=scoreGroupService.insert(scoreGroup);
         if(result>0)
         {
             return "success";

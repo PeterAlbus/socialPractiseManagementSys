@@ -21,6 +21,8 @@ public class Record implements Serializable
     private String recordTitle;
     private String recordContent;
     private Boolean isRead;
+    @TableField(exist = false)
+    private String authorName;
     @Version
     private Integer version;
     @TableField(fill = FieldFill.INSERT)
@@ -127,6 +129,16 @@ public class Record implements Serializable
     public void setIsDelete(Integer isDelete)
     {
         this.isDelete = isDelete;
+    }
+
+    public String getAuthorName()
+    {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName)
+    {
+        this.authorName = authorName;
     }
 
     @Override

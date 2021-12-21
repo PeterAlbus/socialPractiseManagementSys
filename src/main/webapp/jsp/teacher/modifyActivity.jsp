@@ -90,7 +90,7 @@
                                 </el-form-item>
                                 <div class="button-group">
                                     <el-button type="primary" @click="submit('form')" :loading="loading">更改</el-button>
-                                    <el-button type="danger">删除</el-button>
+                                    <el-button type="danger" @click="deleteActivity">删除</el-button>
                                 </div>
                             </el-form>
                         </div>
@@ -101,10 +101,10 @@
                                     <template #title>
                                         <div class="group-list-top">
                                             <div>
-                                                {{item.groupName}}-组长:{{item.leaderName}}, 组员数量:{{item.memberCount}}
+                                                {{item.groupName}}-组长:{{item.leaderName}}, 组员数量:{{item.memberCount}}<el-tag type="success" v-if="item.isFinished" size="small">已完成</el-tag>
                                             </div>
                                             <div>
-                                                <el-button type="primary" size="mini">管理该小组</el-button>
+                                                <el-button type="primary" size="mini" @click="manageGroup(item.groupId)">管理该小组</el-button>
                                             </div>
                                         </div>
                                     </template>
@@ -172,6 +172,7 @@
                         groupName:'${group.getGroupName()}',
                         leaderName:'${group.getLeaderName()}',
                         memberCount:'${group.getMemberCount()}',
+                        isFinished:${group.getFinished()},
                         memberList:[
                             <c:forEach items="${group.getMemberList()}" var="member">
                             {
@@ -267,6 +268,9 @@
                     }
                 })
             },
+            manageGroup(id){
+                location.href="/teacher/manageGroup?groupId="+id
+            },
             addTeacher(id){
                 this.$messageBox.confirm(
                     '确认要添加改老师为负责老师吗，该老师将拥有与你相同的权限？',
@@ -294,6 +298,33 @@
                             else
                             {
                                 location.reload()
+                            }
+                        })
+                    })
+            },
+            deleteActivity(){
+                this.$messageBox.confirm(
+                    '确认要删除该活动吗，其下属的所有小组也将丢失！',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "get",
+                            url: "/teacher/deleteActivity?activityId="+this.activity.activityId,
+                        }).then(res=>{
+                            this.loading=false
+                            if(res.data==="error")
+                            {
+                                this.$message.error('删除失败!')
+                            }
+                            else
+                            {
+                                location.href="/teacher/activities"
                             }
                         })
                     })
