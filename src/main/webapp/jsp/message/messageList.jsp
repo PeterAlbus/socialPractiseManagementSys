@@ -82,7 +82,7 @@
                     <el-page-header icon="el-icon-arrow-left" :content="title" @back="goBack"></el-page-header>
                     <br/>
                     <div class="container">
-                        <div v-for="(item,index) in currentPageMessageList">
+                        <div v-for="(item,index) in currentPageMessageList" style="padding: 2px">
                             <el-badge value="new" style="width: 100%" :hidden="item.isRead">
                                 <el-card shadow="hover">
                                     <template #header>
@@ -141,7 +141,7 @@
                     },
                     </c:forEach>
                 ],
-                activeIndex:'1',
+                activeIndex:'6',
                 dialogVisible:false,
                 currentPage:1,
                 showedMessage:{
@@ -174,7 +174,7 @@
                         }
                         else
                         {
-                            this.location.reload()
+                            location.reload()
                         }
                     })
             }

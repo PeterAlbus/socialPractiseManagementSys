@@ -35,6 +35,10 @@ public class UserService
         return userDao.insert(user);
     }
 
+    public int updateUser(User user)
+    {
+        return userDao.updateById(user);
+    }
     /**
      * Query by username user.
      *

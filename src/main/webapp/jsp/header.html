@@ -9,6 +9,7 @@
         <shiro:hasRole name="student">欢迎学生:{{user.realName}}!</shiro:hasRole>
         <shiro:hasRole name="teacher">欢迎老师:{{user.realName}}!</shiro:hasRole>
         <shiro:hasRole name="admin">欢迎管理员:{{user.realName}}!</shiro:hasRole>
+        <shiro:hasRole name="admin"><el-link type="primary" href="/druid/index.html">数据库监控</el-link></shiro:hasRole>
         <shiro:authenticated>
             <el-badge :value="${messageCount}" class="item" :hidden="${messageCount}==0">
                 <el-button icon="el-icon-message" onclick="location.href='/messageList'" size="mini"></el-button>

@@ -40,6 +40,8 @@ public class TeacherController
     ScoreStuService scoreStuService;
     @Autowired
     MessageService messageService;
+    @Autowired
+    ParticipateService participateService;
     private ModelAndView basicModelAndView()
     {
         ModelAndView modelAndView=PrincipalUtil.getBasicModelAndView();
@@ -185,6 +187,8 @@ public class TeacherController
         int result=activityService.addTeacherToActivity(userId,activityId);
         if(result>0)
         {
+            messageService.sendMessage(userId,"系统",
+                    "新的活动管理任务","你被邀请成为了一个活动的管理教师（活动id："+activityId+"）");
             return "success";
         }
         return "error";
@@ -205,8 +209,11 @@ public class TeacherController
     public String scoreStu(ScoreStu scoreStu)
     {
         int result=scoreStuService.insert(scoreStu);
+        Participate participate= participateService.getById(scoreStu.getParticipationId());
         if(result>0)
         {
+            messageService.sendMessage(participate.getUserId(),"系统",
+                    "社会实践活动评分","老师对你参与的社会实践活动进行了打分，快去看看！（活动id："+participate.getActivityId()+"）");
             return "success";
         }
         return "error";

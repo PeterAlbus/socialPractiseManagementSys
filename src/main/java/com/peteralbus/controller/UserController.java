@@ -1,7 +1,10 @@
 package com.peteralbus.controller;
 
 import com.peteralbus.entity.User;
+import com.peteralbus.service.MessageService;
 import com.peteralbus.service.UserService;
+import com.peteralbus.util.Md5Util;
+import com.peteralbus.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.session.Session;
@@ -19,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -32,6 +36,16 @@ public class UserController
 {
     @Autowired
     UserService userService;
+    @Autowired
+    MessageService messageService;
+
+    private ModelAndView basicModelAndView()
+    {
+        ModelAndView modelAndView= PrincipalUtil.getBasicModelAndView();
+        modelAndView.addObject("messageCount",messageService.getNewMessageCount());
+        modelAndView.addObject("newMessageList",messageService.getNewMessage());
+        return modelAndView;
+    }
     /**
      * Login string.
      *
@@ -83,30 +97,57 @@ public class UserController
             return "注册失败:"+e.getMessage();
         }
     }
+    @ResponseBody
+    @RequestMapping("/updateUser")
+    public String updateUser(User user)
+    {
+        Subject subject = SecurityUtils.getSubject();
+        User oldUser=(User)subject.getPrincipal();
+        oldUser.setUsername(user.getUsername());
+        oldUser.setUserPhone(user.getUserPhone());
+        oldUser.setRealName(user.getRealName());
+        oldUser.setAvatarSrc(user.getAvatarSrc());
+        if(userService.updateUser(oldUser)>0)
+        {
+            return "success";
+        }
+        else
+        {
+            return "error";
+        }
+    }
     @RequestMapping("/changePassword")
-    public ModelAndView changePassword(String password)
+    public ModelAndView changePassword(String oldPassword, String newPassword, HttpSession session)
     {
         ModelAndView modelAndView=new ModelAndView();
         Subject subject = SecurityUtils.getSubject();
         User user=(User)subject.getPrincipal();
-        user.setPassword(password);
+        if(!user.getPassword().equals(Md5Util.md5Hash(oldPassword,user.getUserSalt())))
+        {
+            session.setAttribute("info","原密码错误!");
+            modelAndView.setViewName("redirect:/userCenter");
+            return modelAndView;
+        }
+        user.setPassword(newPassword);
         try
         {
             int result=userService.updateUserPassword(user);
             if(result>0)
             {
-                modelAndView.addObject("info","修改密码成功,请重新登录!");
-                modelAndView.setViewName("redirect:/logout");
+                session.setAttribute("info","修改密码成功,请重新登录!");
+                modelAndView.setViewName("redirect:/login");
             }
             else
             {
-                modelAndView.addObject("info","修改失败!");
-                modelAndView.setViewName("/jsp/account/login.jsp");
+                session.setAttribute("info","修改失败!");
+                modelAndView.setViewName("redirect:/userCenter");
             }
         }
         catch (Exception e)
         {
             e.printStackTrace();
+            session.setAttribute("info",e.getMessage());
+            modelAndView.setViewName("redirect:/userCenter");
         }
         return modelAndView;
     }

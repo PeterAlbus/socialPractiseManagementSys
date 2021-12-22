@@ -127,6 +127,13 @@ public class StudentController
         {
             return "error";
         }
+        Participate participate=participateService.getById(record.getParticipationId());
+        List<User> teacherList=activityService.getTeacherList(participate.getActivityId());
+        for(User user:teacherList)
+        {
+            messageService.sendMessage(user.getUserId(),"系统",
+                    "新的活动记录","你管理的活动有学生提交了新的活动记录！（活动id："+participate.getActivityId()+"）");
+        }
         return "success";
     }
     @ResponseBody
@@ -139,7 +146,8 @@ public class StudentController
             return "error";
         }
         Participate participate=participateService.getById(participateId);
-        messageService.sendMessage(participate.getUserId(),"系统","小组申请通过通知","先前申请社会实践小组的申请通过了！快去看看！（活动id："+participate.getActivityId()+"）");
+        messageService.sendMessage(participate.getUserId(),"系统",
+                "小组申请通过通知","先前申请社会实践小组的申请通过了！快去看看！（活动id："+participate.getActivityId()+"）");
         return "success";
     }
     @ResponseBody
@@ -151,6 +159,9 @@ public class StudentController
         {
             return "error";
         }
+        Participate participate=participateService.getById(participateId);
+        messageService.sendMessage(participate.getUserId(),"系统",
+                "小组申请拒绝通知","很遗憾，你加入小组的申请被组长拒绝了（活动id："+participate.getActivityId()+"）");
         return "success";
     }
     @ResponseBody
@@ -179,6 +190,8 @@ public class StudentController
         int result=participateService.participateWithOldGroup(group);
         if(result>0)
         {
+            messageService.sendMessage(group.getLeaderId(),"系统",
+                    "新的小组申请","你的小组"+group.getGroupName()+"有新的组员想要申请加入！你可以前往该活动的管理页面查看（活动id："+group.getActivityId()+"）");
             return "success";
         }
         else

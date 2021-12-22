@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * The type Page controller.
  * @author PeterAlbus
@@ -38,6 +40,18 @@ public class PageController
     {
         ModelAndView modelAndView=this.basicModelAndView();
         modelAndView.setViewName("/jsp/home.jsp");
+        return modelAndView;
+    }
+    @RequestMapping("/userCenter")
+    public ModelAndView userCenter(HttpSession session)
+    {
+        ModelAndView modelAndView=this.basicModelAndView();
+        String message = (String) session.getAttribute("info");
+        if (message != null) {
+            modelAndView.addObject("info", message);
+            session.removeAttribute("info");
+        }
+        modelAndView.setViewName("/jsp/account/userCenter.jsp");
         return modelAndView;
     }
     @RequestMapping("/messageList")

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * The type Account controller.
  * @author PeterAlbus
@@ -23,9 +25,14 @@ public class AccountController
      * @return the model and view
      */
     @RequestMapping("/login")
-    public ModelAndView login()
+    public ModelAndView login(HttpSession session)
     {
         ModelAndView modelAndView=new ModelAndView();
+        String message = (String) session.getAttribute("info");
+        if (message != null) {
+            modelAndView.addObject("info", message);
+            session.removeAttribute("info");
+        }
         modelAndView.setViewName("/jsp/account/login.jsp");
         return modelAndView;
     }

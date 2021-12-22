@@ -160,6 +160,11 @@ public class ActivityService
         return activityList;
     }
 
+    public List<User> getTeacherList(Long activityId)
+    {
+        return activityDao.getTeacherList(activityId);
+    }
+
     /**
      * Gets count.
      *
