@@ -1,7 +1,9 @@
 package com.peteralbus.controller;
 
 import com.peteralbus.entity.User;
+import com.peteralbus.service.ActivityService;
 import com.peteralbus.service.MessageService;
+import com.peteralbus.service.UserService;
 import com.peteralbus.util.PrincipalUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The type Page controller.
@@ -22,7 +27,11 @@ import javax.servlet.http.HttpSession;
 public class PageController
 {
     @Autowired
+    UserService userService;
+    @Autowired
     MessageService messageService;
+    @Autowired
+    ActivityService activityService;
     /**
      * Home page model and view.
      *
@@ -40,6 +49,26 @@ public class PageController
     {
         ModelAndView modelAndView=this.basicModelAndView();
         modelAndView.setViewName("/jsp/home.jsp");
+        return modelAndView;
+    }
+    @RequestMapping("/user")
+    public ModelAndView userDetail(Long userId)
+    {
+        User user=null;
+        if(userId==null)
+        {
+            Subject subject = SecurityUtils.getSubject();
+            user=(User)subject.getPrincipal();
+        }
+        else
+        {
+            user=userService.queryById(userId);
+        }
+        ModelAndView modelAndView=this.basicModelAndView();
+        modelAndView.addObject("userInfo",user);
+        Map<String,Long> stat=activityService.getUserStat(user);
+        modelAndView.addObject("stat",stat);
+        modelAndView.setViewName("/jsp/account/user.jsp");
         return modelAndView;
     }
     @RequestMapping("/userCenter")

@@ -117,6 +117,7 @@
               </el-rate>
             </div>
             <el-divider content-position="left" id="record">日志查看</el-divider>
+            <el-empty description="暂无数据" v-if="recordList.length==0"></el-empty>
             <el-timeline>
               <el-timeline-item :timestamp="item.gmtCreate" placement="top" v-for="item in recordList">
                 <el-badge value="new" style="width: 100%" :hidden="item.isRead">

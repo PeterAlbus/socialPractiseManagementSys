@@ -164,6 +164,11 @@ public class ParticipateService
         QueryWrapper<Record> recordQueryWrapper=new QueryWrapper<>();
         recordQueryWrapper.eq("participation_id",participate.getParticipationId());
         recordDao.delete(recordQueryWrapper);
+        if(group.getLeaderId().equals(participate.getUserId())&&count==2)
+        {
+            participateDao.deleteById(participationId);
+            return groupDao.deleteById(group);
+        }
         return participateDao.deleteById(participationId);
     }
 

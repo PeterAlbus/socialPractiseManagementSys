@@ -112,6 +112,7 @@
                                     <el-button type="primary" @click="newGroup">创建小组并参加活动</el-button>
                                 </div>
                                 <div class="group-list" v-if="!form.isNewGroup">
+                                    <el-empty description="暂无小组" v-if="groupListResult.length==0"></el-empty>
                                     <el-table :data="groupListResult" style="width: 100%">
                                         <el-table-column prop="groupName" label="小组名"></el-table-column>
                                         <el-table-column prop="gmtCreate" label="创建日期"></el-table-column>

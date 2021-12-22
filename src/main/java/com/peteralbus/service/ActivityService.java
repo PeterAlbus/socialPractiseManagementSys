@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Wrapper;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The type Activity service.
@@ -218,5 +220,33 @@ public class ActivityService
             recordDao.restore(participate.getParticipationId());
         }
         return result;
+    }
+
+    public Map<String,Long> getUserStat(User user)
+    {
+        Map<String,Long> stat=new TreeMap<>();
+        if(user.getUserClass()==0)
+        {
+            stat.put("activityCount", 0L);
+        }
+        if(user.getUserClass()==1)
+        {
+            QueryWrapper<Participate> participateQueryWrapper=new QueryWrapper<>();
+            participateQueryWrapper.eq("user_id",user.getUserId());
+            Long activityCount=participateDao.selectCount(participateQueryWrapper);
+            stat.put("activityCount", activityCount);
+        }
+        if(user.getUserClass()==2)
+        {
+            QueryWrapper<Manage> manageQueryWrapper=new QueryWrapper<>();
+            manageQueryWrapper.eq("user_id",user.getUserId());
+            Long activityCount=manageDao.selectCount(manageQueryWrapper);
+            stat.put("activityCount", activityCount);
+        }
+        QueryWrapper<Group> groupQueryWrapper=new QueryWrapper<>();
+        groupQueryWrapper.eq("leader_id",user.getUserId());
+        Long groupCount=groupDao.selectCount(groupQueryWrapper);
+        stat.put("groupCount",groupCount);
+        return stat;
     }
 }

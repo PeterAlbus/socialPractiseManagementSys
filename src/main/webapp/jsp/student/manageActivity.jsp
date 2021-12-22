@@ -110,6 +110,7 @@
                             </el-form-item>
                         </el-form>
                         <h4>已提交日志</h4>
+                        <el-empty description="暂无数据" v-if="recordList.length==0"></el-empty>
                         <el-timeline>
                             <el-timeline-item :timestamp="item.gmtCreate" placement="top" v-for="item in recordList">
                                 <el-card>

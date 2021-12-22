@@ -96,6 +96,7 @@
                         </div>
                         <el-divider content-position="left">参加活动的小组</el-divider>
                         <div>
+                            <el-empty description="暂无小组" v-if="groupList.length==0"></el-empty>
                             <el-collapse>
                                 <el-collapse-item :name="item.groupId" v-for="item in groupList" style="width:100%">
                                     <template #title>

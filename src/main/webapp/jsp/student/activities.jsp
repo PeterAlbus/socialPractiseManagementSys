@@ -98,6 +98,7 @@
                                 </el-switch>
                             </div>
                             <el-divider content-position="left">参加的活动</el-divider>
+                            <el-empty description="暂无数据" v-if="activityListResult.length==0"></el-empty>
                             <div class="activity-list-card" v-for="item in activityListResult">
                                 <el-card class="box-card" shadow="hover">
                                     <div class="card-header">
@@ -120,6 +121,7 @@
                                         v-model:current-page="currentPage">
                                 </el-pagination>
                             </div>
+                            <el-empty description="暂无数据" v-if="currentPageAllActivities.length==0"></el-empty>
                             <div class="activity-list-card" v-for="(item,index) in currentPageAllActivities">
                                 <el-card class="box-card" shadow="hover">
                                     <template #header>

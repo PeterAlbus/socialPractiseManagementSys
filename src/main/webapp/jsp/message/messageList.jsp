@@ -82,6 +82,7 @@
                     <el-page-header icon="el-icon-arrow-left" :content="title" @back="goBack"></el-page-header>
                     <br/>
                     <div class="container">
+                        <el-empty description="暂无数据" v-if="currentPageMessageList.length==0"></el-empty>
                         <div v-for="(item,index) in currentPageMessageList" style="padding: 2px">
                             <el-badge value="new" style="width: 100%" :hidden="item.isRead">
                                 <el-card shadow="hover">
