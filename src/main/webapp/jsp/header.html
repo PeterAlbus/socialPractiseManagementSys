@@ -11,7 +11,7 @@
         <shiro:hasRole name="admin">欢迎管理员:{{user.realName}}!</shiro:hasRole>
         <shiro:authenticated>
             <el-badge :value="${messageCount}" class="item" :hidden="${messageCount}==0">
-                <el-button icon="el-icon-message" onclick="location.href='/message'" size="mini"></el-button>
+                <el-button icon="el-icon-message" onclick="location.href='/messageList'" size="mini"></el-button>
             </el-badge>
             &emsp;
             <el-link href="${pageContext.request.contextPath}/logout">登出 <i class="fa fa-sign-out"></i></el-link>

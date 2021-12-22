@@ -166,4 +166,9 @@ public class ParticipateService
         recordDao.delete(recordQueryWrapper);
         return participateDao.deleteById(participationId);
     }
+
+    public Participate getById(Long participationId)
+    {
+        return participateDao.selectById(participationId);
+    }
 }

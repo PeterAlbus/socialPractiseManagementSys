@@ -43,6 +43,7 @@ public class MessageService
         User user=(User)subject.getPrincipal();
         QueryWrapper<Message> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("message_receiver",user.getUserId());
+        queryWrapper.eq("is_read",false);
         return messageDao.selectCount(queryWrapper);
     }
     public int sendMessage(Long targetId,String sender,String title,String content)
@@ -54,5 +55,11 @@ public class MessageService
         message.setMessageContent(content);
         message.setRead(false);
         return messageDao.insert(message);
+    }
+    public int readMessage(Long messageId)
+    {
+        Message message=messageDao.selectById(messageId);
+        message.setRead(true);
+        return messageDao.updateById(message);
     }
 }

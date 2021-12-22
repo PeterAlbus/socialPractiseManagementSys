@@ -44,6 +44,7 @@ public class PageController
     public ModelAndView messageList()
     {
         ModelAndView modelAndView=this.basicModelAndView();
+        modelAndView.addObject("messageList",messageService.getMessage());
         modelAndView.setViewName("/jsp/message/messageList.jsp");
         return modelAndView;
     }
@@ -53,5 +54,16 @@ public class PageController
         ModelAndView modelAndView=this.basicModelAndView();
         modelAndView.setViewName("/jsp/message/message.jsp");
         return modelAndView;
+    }
+    @ResponseBody
+    @RequestMapping("/readMessage")
+    public String readMessage(Long messageId)
+    {
+        int result=messageService.readMessage(messageId);
+        if(result>0)
+        {
+            return "success";
+        }
+        return "error";
     }
 }

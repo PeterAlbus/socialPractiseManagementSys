@@ -138,6 +138,8 @@ public class StudentController
         {
             return "error";
         }
+        Participate participate=participateService.getById(participateId);
+        messageService.sendMessage(participate.getUserId(),"系统","小组申请通过通知","先前申请社会实践小组的申请通过了！快去看看！（活动id："+participate.getActivityId()+"）");
         return "success";
     }
     @ResponseBody

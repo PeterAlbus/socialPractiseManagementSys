@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * The type Message.
@@ -111,6 +112,11 @@ public class Message implements Serializable
     public void setGmtCreate(LocalDateTime gmtCreate)
     {
         this.gmtCreate = gmtCreate;
+    }
+
+    public String getFormattedCreateDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return getGmtCreate().format(formatter);
     }
 
     public LocalDateTime getGmtModified()
