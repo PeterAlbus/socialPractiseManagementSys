@@ -191,6 +191,7 @@
 
     <!-- securityManager安全管理器 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="sessionManager" ref="sessionManager"/>
         <property name="realm" ref="customRealm"/>
     </bean>
 
