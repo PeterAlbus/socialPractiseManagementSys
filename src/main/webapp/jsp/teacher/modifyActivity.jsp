@@ -116,7 +116,11 @@
                                     </template>
                                     <el-table :data="item.memberList" style="width: 100%" stripe>
                                         <el-table-column prop="username" label="用户名"></el-table-column>
-                                        <el-table-column prop="realName" label="姓名"></el-table-column>
+                                        <el-table-column prop="realName" label="姓名">
+                                            <template #default="scope">
+                                                <el-link type="primary" :href="'/user?userId='+scope.row.userId">{{scope.row.realName}}</el-link>
+                                            </template>
+                                        </el-table-column>
                                         <el-table-column align="right" label="加入状态">
                                             <template #default="scope">
                                                 <el-tag type="success" v-if="scope.row.isAccept">已通过</el-tag>

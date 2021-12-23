@@ -76,4 +76,14 @@ public class AdminController
         }
         return "error";
     }
+    @ResponseBody
+    @RequestMapping("/setAdmin")
+    public String setAdmin(Long userId)
+    {
+        if(userService.setAdmin(userId)>0)
+        {
+            return "success";
+        }
+        return "error";
+    }
 }

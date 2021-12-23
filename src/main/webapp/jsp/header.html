@@ -5,7 +5,7 @@
 <div class="navbar">
     <div class="hamburger-container"><i class="el-icon-s-grid"></i> 社会实践活动管理系统-{{title}}</div>
     <div class="right-menu">
-        <el-avatar :src="user.avatarSrc" size="small"></el-avatar>&emsp;
+        <el-avatar :src="user.avatarSrc" size="small" onclick="location.href='/userCenter'"></el-avatar>&emsp;
         <shiro:hasRole name="student">欢迎学生:{{user.realName}}!</shiro:hasRole>
         <shiro:hasRole name="teacher">欢迎老师:{{user.realName}}!</shiro:hasRole>
         <shiro:hasRole name="admin">欢迎管理员:{{user.realName}}!</shiro:hasRole>

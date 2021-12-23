@@ -93,4 +93,11 @@ public class UserService
     {
         return userDao.selectById(userId);
     }
+
+    public int setAdmin(Long userId)
+    {
+        User user=userDao.selectById(userId);
+        user.setUserClass(0);
+        return userDao.updateById(user);
+    }
 }

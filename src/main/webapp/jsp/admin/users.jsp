@@ -73,6 +73,14 @@
                             <el-table-column prop="version" label="版本"></el-table-column>
                             <el-table-column prop="gmtCreate" label="创建时间" width="250"></el-table-column>
                             <el-table-column prop="gmtModified" label="上次更改" width="250"></el-table-column>
+                            <el-table-column width="120">
+                                <template #header>
+                                    给与权限
+                                </template>
+                                <template #default="scope">
+                                    <el-button size="mini" @click="setAdmin(scope.row.userId)" type="danger" v-if="scope.row.userClass!=='0'">设为管理员</el-button>
+                                </template>
+                            </el-table-column>
                             <el-table-column align="right" fixed="right" width="100">
                                 <template #header>
                                     <el-input v-model="keyWord" size="mini" placeholder="搜索用户"></el-input>
@@ -163,6 +171,32 @@
                             else
                             {
                                 this.$message.success('重置成功!')
+                            }
+                        })
+                    })
+            },
+            setAdmin(id){
+                this.$messageBox.confirm(
+                    '确认要将该用户设置为管理员吗？',
+                    '警告',
+                    {
+                        confirmButtonText: '确认',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                )
+                    .then(() => {
+                        axios({
+                            method: "get",
+                            url: "/admin/setAdmin?userId="+id,
+                        }).then(res=>{
+                            if(res.data==="error")
+                            {
+                                this.$message.error('设置失败!')
+                            }
+                            else
+                            {
+                                this.$message.success('设置成功!')
                             }
                         })
                     })

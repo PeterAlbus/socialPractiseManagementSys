@@ -20,11 +20,16 @@
 </head>
 <body>
 <div id="app">
+    <Modal
+            v-model="modal1"
+            title="如何创建管理员？">
+        <p>如果需要创建管理员账号，请先注册一个任意类型的新账号，然后联系网站管理员将您设为管理员</p>
+    </Modal>
     <Row class="login-box">
         <i-col span="12">
             <img src="${pageContext.request.contextPath}/img/1.jpeg" alt="" class="login-img"/>
         </i-col>
-        <i-col span="12">
+        <i-col span="12" style="overflow: hidden">
             <i-form ref="form" :model="form" :rules="rule" :label-width="80" class="login-form">
                 <h1 class="login-title">用户注册</h1>
                 <Alert type="error" show-icon v-if="info!==''">{{info}}</Alert>
@@ -32,7 +37,10 @@
                     <Avatar :src="form.avatarSrc" size="large"></Avatar>
                 </Form-item>
                 <Form-item>
-                    <Upload action="#" on-success="uploadSuccess">
+                    <Upload action="https://www.peteralbus.com:8089/photo/customUpload/"
+                            :data="upData"
+                            :default-file-list="fileList"
+                            :on-success="handleAvatarSuccess">
                         <i-button type="primary" icon="ios-cloud-upload-outline">上传头像</i-button>
                     </Upload>
                 </Form-item>
@@ -69,7 +77,7 @@
                     </i-select>
                 </Form-item>
                 <Form-item>
-                    <Checkbox v-model="canRegister">我同意本站的许可条款</Checkbox>
+                    <Checkbox v-model="canRegister">我同意本站的许可条款</Checkbox><Icon type="ios-help" @click="modal1=true"></Icon>
                 </Form-item>
                 <Form-item>
                     <i-button type="primary" @click="handleSubmit('form')" size="large" shape="circle" :loading="loading" :disabled="!canRegister">注册</i-button>
@@ -93,8 +101,10 @@
                 }
             };
             return {
+                fileList:[],
                 canRegister:false,
                 loading:false,
+                modal1:false,
                 info:'',
                 form: {
                     username: '',
@@ -171,9 +181,34 @@
                     }
                 })
             },
-            handleSuccess (res, file) {
-                console.log(res.data)
+            handleAvatarSuccess(res, file, fileList) {
+                console.log(res)
+                this.form.avatarSrc = res;
+                this.fileList=[]
+                this.$Message.success('上传头像成功！')
             },
+            uuid() {
+                var s = [];
+                var hexDigits = "0123456789abcdef";
+                for (var i = 0; i < 36; i++) {
+                    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+                }
+                s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+                s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+                s[8] = s[13] = s[18] = s[23] = "-";
+
+                var uuid = s.join("");
+                return uuid;
+            }
+        },
+        computed:{
+            upData:function () {
+                let uuid=this.uuid();
+                return {
+                    path: 'social/',
+                    saveName: uuid
+                }
+            }
         }
     })
 </script>
