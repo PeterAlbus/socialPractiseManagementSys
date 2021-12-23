@@ -116,7 +116,11 @@
                                     <el-table :data="groupListResult" style="width: 100%">
                                         <el-table-column prop="groupName" label="小组名"></el-table-column>
                                         <el-table-column prop="gmtCreate" label="创建日期"></el-table-column>
-                                        <el-table-column prop="leaderName" label="组长姓名"></el-table-column>
+                                        <el-table-column label="组长姓名">
+                                            <template #default="scope">
+                                                <el-link type="primary" :href="'/user?userId='+scope.row.leaderId">{{scope.row.leaderName}}</el-link>
+                                            </template>
+                                        </el-table-column>
                                         <el-table-column align="right">
                                             <template #header>
                                                 <el-input v-model="keyWord" size="mini" placeholder="搜索姓名/组名"></el-input>

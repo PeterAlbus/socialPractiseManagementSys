@@ -137,7 +137,11 @@
                             <h4>成员信息</h4>
                             <el-table :data="memberList" style="width: 100%" stripe>
                                 <el-table-column prop="username" label="用户名"></el-table-column>
-                                <el-table-column prop="realName" label="姓名"></el-table-column>
+                                <el-table-column prop="realName" label="姓名">
+                                    <template #default="scope">
+                                        <el-link type="primary" :href="'/user?userId='+scope.row.userId">{{scope.row.realName}}</el-link>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column align="right" label="加入状态">
                                     <template #default="scope">
                                         <el-button size="mini" @click="accept(scope.row.participateId)" v-if="(!scope.row.isAccept)&&user.userId==group.leaderId">通过</el-button>

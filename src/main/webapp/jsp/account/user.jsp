@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>用户中心</title>
+  <title>用户统计</title>
   <!-- 导入 Vue 3 -->
   <script src="${pageContext.request.contextPath}/vue/vue@next/vue.global.js"></script>
   <!-- 导入组件库 -->
@@ -39,27 +39,24 @@
           <el-page-header icon="el-icon-arrow-left" :content="title" @back="goBack"></el-page-header>
           <br/>
           <div class="container">
-            <el-form ref="form" :model="user" :label-width="80">
+            <el-form ref="form" :model="user" :label-width="250">
               <el-form-item label="头像">
                 <img v-if="user.avatarSrc" :src="user.avatarSrc" class="avatar" />
               </el-form-item>
               <el-form-item prop="username" label="用户名">
-                <el-input type="text" v-model="user.username" placeholder="用户名"></el-input>
+                {{user.username}}
               </el-form-item>
               <el-form-item prop="realName" label="姓名">
-                <el-input type="text" v-model="user.realName" placeholder="name"></el-input>
-              </el-form-item>
-              <el-form-item prop="password" label="密码">
-                <el-button type="danger" @click="dialogVisible=true" size="small" round>修改密码</el-button>
+                {{user.realName}}
               </el-form-item>
               <el-form-item prop="userPhone" label="手机号">
-                <el-input type="text" v-model="user.userPhone" placeholder="phone number"></el-input>
+                {{user.userPhone}}
               </el-form-item>
               <el-form-item label="参加/管理的活动数">
-                <el-input type="text" v-model="stat.activityCount" placeholder="phone number"></el-input>
+                {{stat.activityCount}}
               </el-form-item>
               <el-form-item label="担任组长次数">
-                <el-input type="text" v-model="stat.groupCount" placeholder="phone number"></el-input>
+                {{stat.groupCount}}
               </el-form-item>
             </el-form>
           </div>
@@ -75,7 +72,7 @@
   const App = {
     data() {
       return{
-        title:'用户中心',
+        title:'用户统计',
         user:{
           userId:'',
           username:'',
@@ -91,11 +88,11 @@
       }
     },
     mounted(){
-      this.user.userId='${userId}'
-      this.user.realName='${realName}'
-      this.user.username='${username}'
-      this.user.avatarSrc='${avatarSrc}'
-      this.user.userPhone='${userPhone}'
+      this.user.userId='${userInfo.userId}'
+      this.user.realName='${userInfo.realName}'
+      this.user.username='${userInfo.username}'
+      this.user.avatarSrc='${userInfo.avatarSrc}'
+      this.user.userPhone='${userInfo.userPhone}'
     },
     methods: {
       goBack(){

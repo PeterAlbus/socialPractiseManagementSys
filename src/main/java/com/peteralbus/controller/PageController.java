@@ -74,6 +74,7 @@ public class PageController
     @RequestMapping("/user")
     public ModelAndView userDetail(Long userId)
     {
+        System.out.println(userId);
         User user=null;
         if(userId==null)
         {
