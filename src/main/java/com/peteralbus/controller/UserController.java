@@ -63,8 +63,12 @@ public class UserController
         try {
             subject.login(token);
         }
-        catch(Exception ae){
-            return "登陆失败："+ae.getMessage();
+        catch (IncorrectCredentialsException ie){
+            return "登陆失败：密码错误！";
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return "登陆失败："+e.getMessage();
         }
         return "success";
     }

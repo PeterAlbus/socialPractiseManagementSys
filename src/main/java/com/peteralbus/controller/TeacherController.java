@@ -23,6 +23,7 @@ import java.util.Map;
  * @author PeterAlbus
  */
 @Controller
+@RequiresRoles(value={"teacher","admin"}, logical= Logical.OR)
 @RequestMapping("/teacher")
 public class TeacherController
 {
@@ -49,7 +50,6 @@ public class TeacherController
         modelAndView.addObject("newMessageList",messageService.getNewMessage());
         return modelAndView;
     }
-    @RequiresRoles(value={"teacher"}, logical= Logical.OR)
     @RequestMapping("/activities")
     public ModelAndView activities()
     {

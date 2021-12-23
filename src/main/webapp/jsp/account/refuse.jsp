@@ -22,7 +22,25 @@
 <body>
 <div id="app">
     <header>
-        <%@ include file="/jsp/header.html" %>
+        <link rel="stylesheet" href="/css/header.css">
+        <el-affix>
+            <div class="navbar">
+                <div class="hamburger-container"><i class="el-icon-s-grid"></i> 社会实践活动管理系统-{{title}}</div>
+                <div class="right-menu">
+                    <el-avatar :src="user.avatarSrc" size="small" onclick="location.href='/userCenter'"></el-avatar>&emsp;
+                    <shiro:hasRole name="student">欢迎学生:{{user.realName}}!</shiro:hasRole>
+                    <shiro:hasRole name="teacher">欢迎老师:{{user.realName}}!</shiro:hasRole>
+                    <shiro:hasRole name="admin">欢迎管理员:{{user.realName}}!</shiro:hasRole>
+                    <shiro:hasRole name="admin"><el-link type="primary" href="/druid/index.html">数据库监控</el-link></shiro:hasRole>
+                    <shiro:authenticated>
+                        <el-link href="${pageContext.request.contextPath}/logout">登出 <i class="fa fa-sign-out"></i></el-link>
+                    </shiro:authenticated>
+                </div>
+            </div>
+        </el-affix>
+        <div class="container">
+            <img src="${pageContext.request.contextPath}/img/banner.jpg" class="banner" alt="">
+        </div>
     </header>
     <div class="main">
         <div class="container">

@@ -6,6 +6,8 @@ import com.peteralbus.service.ActivityService;
 import com.peteralbus.service.MessageService;
 import com.peteralbus.service.UserService;
 import com.peteralbus.util.PrincipalUtil;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import java.util.List;
  * @author PeterAlbus
  */
 @Controller
+@RequiresRoles(value={"admin"}, logical= Logical.OR)
 @RequestMapping("/admin")
 public class AdminController
 {
