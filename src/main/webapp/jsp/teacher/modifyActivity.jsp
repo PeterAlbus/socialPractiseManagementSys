@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/vue/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/teacher/modifyActivity.css">
-    <link rel="stylesheet" href="//unpkg.com/element-plus@1.1.0-beta.9/dist/index.css" />
+    <link rel="stylesheet" href="//unpkg.com/element-plus@1.1.0-beta.9/dist/index.css"/>
 </head>
 <body>
 <div id="app">
@@ -48,7 +48,8 @@
                                     <el-input v-model="keyWord" size="mini" placeholder="搜索姓名/用户名"></el-input>
                                 </template>
                                 <template #default="scope">
-                                    <el-button size="mini" @click="addTeacher(scope.row.userId)" type="primary">添加</el-button>
+                                    <el-button size="mini" @click="addTeacher(scope.row.userId)" type="primary">添加
+                                    </el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -83,10 +84,11 @@
                                     <el-button @click="dialogVisible=true" size="small" type="primary">添加</el-button>
                                 </el-form-item>
                                 <el-form-item label="参加人数">
-                                    <el-slider v-model="range" range :max="50" :min="1"> </el-slider>
+                                    <el-slider v-model="range" range :max="50" :min="1"></el-slider>
                                 </el-form-item>
                                 <el-form-item label="活动介绍" prop="activityIntroduction">
-                                    <el-input type="textarea" :rows="10" v-model="activity.activityIntroduction"></el-input>
+                                    <el-input type="textarea" :rows="10"
+                                              v-model="activity.activityIntroduction"></el-input>
                                 </el-form-item>
                                 <div class="button-group">
                                     <el-button type="primary" @click="submit('form')" :loading="loading">更改</el-button>
@@ -102,10 +104,13 @@
                                     <template #title>
                                         <div class="group-list-top">
                                             <div>
-                                                {{item.groupName}}-组长:{{item.leaderName}}, 组员数量:{{item.memberCount}}<el-tag type="success" v-if="item.isFinished" size="small">已完成</el-tag>
+                                                {{item.groupName}}-组长:{{item.leaderName}}, 组员数量:{{item.memberCount}}
+                                                <el-tag type="success" v-if="item.isFinished" size="small">已完成</el-tag>
                                             </div>
                                             <div>
-                                                <el-button type="primary" size="mini" @click="manageGroup(item.groupId)">管理该小组</el-button>
+                                                <el-button type="primary" size="mini"
+                                                           @click="manageGroup(item.groupId)">管理该小组
+                                                </el-button>
                                             </div>
                                         </div>
                                     </template>
@@ -134,34 +139,34 @@
 <script>
     const App = {
         data() {
-            return{
-                title:'管理社会实践活动',
-                user:{
-                    username:'',
-                    realName:'',
+            return {
+                title: '管理社会实践活动',
+                user: {
+                    username: '',
+                    realName: '',
                     avatarSrc: ''
                 },
-                range:[${activity.getMinPeople()},${activity.getMaxPeople()}],
-                loading:false,
-                dialogVisible:false,
-                currentPage:1,
-                keyWord:'',
-                activity:{
+                range: [${activity.getMinPeople()}, ${activity.getMaxPeople()}],
+                loading: false,
+                dialogVisible: false,
+                currentPage: 1,
+                keyWord: '',
+                activity: {
                     activityId: '${activity.getActivityId()}',
                     activityName: '${activity.getActivityName()}',
-                    activityType:'${activity.getActivityType()}',
-                    activityIntroduction:'${activity.getActivityIntroduction()}',
+                    activityType: '${activity.getActivityType()}',
+                    activityIntroduction: '${activity.getActivityIntroduction()}',
                     minPeople:${activity.getMinPeople()},
                     maxPeople:${activity.getMaxPeople()},
-                    gmtCreate:'${activity.getFormattedCreateDate()}',
-                    teachers:[
+                    gmtCreate: '${activity.getFormattedCreateDate()}',
+                    teachers: [
                         <c:forEach items="${activity.getTeacherList()}" var="teacher">
                         {
-                            userId:'${teacher.getUserId()}',
-                            username:'${teacher.getUsername()}',
-                            realName:'${teacher.getRealName()}',
-                            userPhone:'${teacher.getUserPhone()}',
-                            avatarSrc:'${teacher.getAvatarSrc()}'
+                            userId: '${teacher.getUserId()}',
+                            username: '${teacher.getUsername()}',
+                            realName: '${teacher.getRealName()}',
+                            userPhone: '${teacher.getUserPhone()}',
+                            avatarSrc: '${teacher.getAvatarSrc()}'
                         },
                         </c:forEach>
                     ]
@@ -169,18 +174,18 @@
                 groupList: [
                     <c:forEach items="${groupList}" var="group">
                     {
-                        groupId:'${group.getGroupId()}',
-                        groupName:'${group.getGroupName()}',
-                        leaderName:'${group.getLeaderName()}',
-                        memberCount:'${group.getMemberCount()}',
+                        groupId: '${group.getGroupId()}',
+                        groupName: '${group.getGroupName()}',
+                        leaderName: '${group.getLeaderName()}',
+                        memberCount: '${group.getMemberCount()}',
                         isFinished:${group.getFinished()},
-                        memberList:[
+                        memberList: [
                             <c:forEach items="${group.getMemberList()}" var="member">
                             {
-                                participateId:'${member.getParticipationId()}',
-                                userId:'${member.getUserId()}',
-                                username:'${member.getUsername()}',
-                                realName:'${member.getRealName()}',
+                                participateId: '${member.getParticipationId()}',
+                                userId: '${member.getUserId()}',
+                                username: '${member.getUsername()}',
+                                realName: '${member.getRealName()}',
                                 isAccept:${member.getAccept()}
                             },
                             </c:forEach>
@@ -188,33 +193,33 @@
                     },
                     </c:forEach>
                 ],
-                teacherList:[
+                teacherList: [
                     <c:forEach items="${teacherList}" var="teacher">
                     {
-                        userId:'${teacher.getUserId()}',
-                        username:'${teacher.getUsername()}',
-                        realName:'${teacher.getRealName()}',
+                        userId: '${teacher.getUserId()}',
+                        username: '${teacher.getUsername()}',
+                        realName: '${teacher.getRealName()}',
                     },
                     </c:forEach>
                 ],
                 rules: {
                     activityName: [
-                        { required: true, message: '请填写活动名称', trigger: 'blur' }
+                        {required: true, message: '请填写活动名称', trigger: 'blur'}
                     ],
                     activityType: [
-                        { required: true, message: '请选择活动类型', trigger: 'blur' }
+                        {required: true, message: '请选择活动类型', trigger: 'blur'}
                     ],
                     activityIntroduction: [
-                        { required: true, message: '请填写活动简介', trigger: 'blur' }
+                        {required: true, message: '请填写活动简介', trigger: 'blur'}
                     ],
                 },
-                activeIndex:'2'
+                activeIndex: '2'
             }
         },
-        mounted(){
-            this.user.realName='${realName}'
-            this.user.username='${username}'
-            this.user.avatarSrc='${avatarSrc}'
+        mounted() {
+            this.user.realName = '${realName}'
+            this.user.username = '${username}'
+            this.user.avatarSrc = '${avatarSrc}'
             <c:if test="${newMessageList.size()!=0}">
             this.$notify.info({
                 title: '有新消息:${newMessageList.get(0).getMessageTitle()}',
@@ -223,63 +228,58 @@
             })
             </c:if>
         },
-        computed:{
-            teacherListResult:function (){
-                let result=[];
-                for(let i=0;i<this.teacherList.length;i++)
-                {
-                    let str=this.teacherList[i].realName
-                    let str1=this.teacherList[i].username
-                    if(str.search(this.keyWord)!==-1||str1.search(this.keyWord)!==-1)
-                    {
+        computed: {
+            teacherListResult: function () {
+                let result = [];
+                for (let i = 0; i < this.teacherList.length; i++) {
+                    let str = this.teacherList[i].realName
+                    let str1 = this.teacherList[i].username
+                    if (str.search(this.keyWord) !== -1 || str1.search(this.keyWord) !== -1) {
                         result.push(this.teacherList[i]);
                     }
                 }
                 return result;
             },
-            teacherListResultPagination:function (){
-                return this.teacherListResult.slice((this.currentPage-1)*5,this.currentPage*5)
+            teacherListResultPagination: function () {
+                return this.teacherListResult.slice((this.currentPage - 1) * 5, this.currentPage * 5)
             }
         },
         methods: {
-            goBack(){
+            goBack() {
                 window.history.go(-1);
             },
             submit(name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.loading=true
-                        this.activity.minPeople=this.range[0]
-                        this.activity.maxPeople=this.range[1]
+                        this.loading = true
+                        this.activity.minPeople = this.range[0]
+                        this.activity.maxPeople = this.range[1]
                         axios({
                             method: "post",
                             url: "/teacher/updateActivity",
                             data: this.activity,
-                            transformRequest: [ function(data){
+                            transformRequest: [function (data) {
                                 return Qs.stringify(data)  //使用Qs将请求参数序列化
                             }],
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded'  //必须设置传输方式
                             }
                         })
-                            .then(res=>{
-                                this.loading=false
-                                if(res.data==="error")
-                                {
+                            .then(res => {
+                                this.loading = false
+                                if (res.data === "error") {
                                     this.$message.error('更改活动内容失败!')
-                                }
-                                else
-                                {
+                                } else {
                                     this.$message.success('更改成功!')
                                 }
                             })
                     }
                 })
             },
-            manageGroup(id){
-                location.href="/teacher/manageGroup?groupId="+id
+            manageGroup(id) {
+                location.href = "/teacher/manageGroup?groupId=" + id
             },
-            addTeacher(id){
+            addTeacher(id) {
                 this.$messageBox.confirm(
                     '确认要添加改老师为负责老师吗，该老师将拥有与你相同的权限？',
                     '警告',
@@ -292,25 +292,20 @@
                     .then(() => {
                         axios({
                             method: "get",
-                            url: "/teacher/addTeacherToActivity?userId="+id+"&activityId="+this.activity.activityId,
-                        }).then(res=>{
-                            this.loading=false
-                            if(res.data==="error")
-                            {
+                            url: "/teacher/addTeacherToActivity?userId=" + id + "&activityId=" + this.activity.activityId,
+                        }).then(res => {
+                            this.loading = false
+                            if (res.data === "error") {
                                 this.$message.error('添加失败!')
-                            }
-                            else if(res.data==="exist")
-                            {
+                            } else if (res.data === "exist") {
                                 this.$message.error('该老师已经是负责老师!')
-                            }
-                            else
-                            {
+                            } else {
                                 location.reload()
                             }
                         })
                     })
             },
-            deleteActivity(){
+            deleteActivity() {
                 this.$messageBox.confirm(
                     '确认要删除该活动吗，其下属的所有小组也将丢失！',
                     '警告',
@@ -323,16 +318,13 @@
                     .then(() => {
                         axios({
                             method: "get",
-                            url: "/teacher/deleteActivity?activityId="+this.activity.activityId,
-                        }).then(res=>{
-                            this.loading=false
-                            if(res.data==="error")
-                            {
+                            url: "/teacher/deleteActivity?activityId=" + this.activity.activityId,
+                        }).then(res => {
+                            this.loading = false
+                            if (res.data === "error") {
                                 this.$message.error('删除失败!')
-                            }
-                            else
-                            {
-                                location.href="/teacher/activities"
+                            } else {
+                                location.href = "/teacher/activities"
                             }
                         })
                     })

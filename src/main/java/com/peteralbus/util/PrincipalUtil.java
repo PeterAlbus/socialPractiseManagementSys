@@ -34,6 +34,7 @@ public class PrincipalUtil
         modelAndView.addObject("avatarSrc",user.getAvatarSrc());
         modelAndView.addObject("userId",user.getUserId());
         modelAndView.addObject("userPhone",user.getUserPhone());
+        modelAndView.addObject("userClass",user.getUserClass());
         return modelAndView;
     }
 }

@@ -1,5 +1,6 @@
 package com.peteralbus.controller;
 
+import com.peteralbus.entity.Activity;
 import com.peteralbus.entity.User;
 import com.peteralbus.service.ActivityService;
 import com.peteralbus.service.MessageService;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -48,6 +50,24 @@ public class PageController
     public ModelAndView homePage()
     {
         ModelAndView modelAndView=this.basicModelAndView();
+        Subject subject = SecurityUtils.getSubject();
+        User user=(User)subject.getPrincipal();
+        if(user.getUserClass()==1)
+        {
+            List<Activity> activityList=activityService.getActivityByStudent(user.getUserId());
+            modelAndView.addObject("activityList",activityList);
+        }
+        if(user.getUserClass()==2)
+        {
+            List<Activity> activityList=activityService.getActivityByTeacher(user.getUserId());
+            modelAndView.addObject("activityList",activityList);
+        }
+        if(user.getUserClass()==0)
+        {
+            modelAndView.addObject("activityList",null);
+        }
+        List<Activity> allActivities=activityService.getActivities();
+        modelAndView.addObject("allActivities",allActivities);
         modelAndView.setViewName("/jsp/home.jsp");
         return modelAndView;
     }
