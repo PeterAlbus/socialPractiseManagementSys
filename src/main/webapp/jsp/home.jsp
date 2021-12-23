@@ -234,7 +234,7 @@
                 {
                     location.href='/student/applyActivity?activityId='+id
                 }
-                if(this.user.userClass==='2')
+                if(this.user.userClass==='2'||this.user.userClass==='0')
                 {
                     location.href='/teacher/activityDetail?activityId='+id
                 }

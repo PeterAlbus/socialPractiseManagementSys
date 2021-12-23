@@ -39,18 +39,18 @@
           <el-page-header icon="el-icon-arrow-left" :content="title" @back="goBack"></el-page-header>
           <br/>
           <div class="container">
-            <el-form ref="form" :model="user" :label-width="250">
+            <el-form ref="form" :model="user1" :label-width="250">
               <el-form-item label="头像">
-                <img v-if="user.avatarSrc" :src="user.avatarSrc" class="avatar" />
+                <img v-if="user1.avatarSrc" :src="user1.avatarSrc" class="avatar" />
               </el-form-item>
               <el-form-item prop="username" label="用户名">
-                {{user.username}}
+                {{user1.username}}
               </el-form-item>
               <el-form-item prop="realName" label="姓名">
-                {{user.realName}}
+                {{user1.realName}}
               </el-form-item>
               <el-form-item prop="userPhone" label="手机号">
-                {{user.userPhone}}
+                {{user1.userPhone}}
               </el-form-item>
               <el-form-item label="参加/管理的活动数">
                 {{stat.activityCount}}
@@ -80,6 +80,13 @@
           userPhone:'',
           avatarSrc: '',
         },
+        user1:{
+          userId:'',
+          username:'',
+          realName:'',
+          userPhone:'',
+          avatarSrc: '',
+        },
         stat:{
           activityCount:${stat.get("activityCount")},
           groupCount:${stat.get("groupCount")}
@@ -88,11 +95,16 @@
       }
     },
     mounted(){
-      this.user.userId='${userInfo.userId}'
-      this.user.realName='${userInfo.realName}'
-      this.user.username='${userInfo.username}'
-      this.user.avatarSrc='${userInfo.avatarSrc}'
-      this.user.userPhone='${userInfo.userPhone}'
+      this.user.userId='${userId}'
+      this.user.realName='${realName}'
+      this.user.username='${username}'
+      this.user.avatarSrc='${avatarSrc}'
+      this.user.userPhone='${userPhone}'
+      this.user1.userId='${userInfo.userId}'
+      this.user1.realName='${userInfo.realName}'
+      this.user1.username='${userInfo.username}'
+      this.user1.avatarSrc='${userInfo.avatarSrc}'
+      this.user1.userPhone='${userInfo.userPhone}'
     },
     methods: {
       goBack(){
