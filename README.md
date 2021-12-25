@@ -12,6 +12,8 @@ a course of SSM's homework
 
 项目使用Spring+SpringMVC+Mybatis-plus+shiro作为框架，前后端不分离，选择了原始的jsp，并在jsp中使用了vue.js以进行一部分mvvm架构的页面设计
 
+头像上传功能使用了我博客内的图床，有兴趣的可以查看我的博客项目
+
 德鲁伊后台的密码在web.xml中进行配置
 
-前段样式基本采用element-ui
+前端样式基本采用element-ui
