@@ -275,6 +275,10 @@
                             {
                                 this.$message.error('创建小组失败!')
                             }
+                            else if(res.data==="toManyMembers")
+                            {
+                                this.$message.error('该小组人数已满！')
+                            }
                             else
                             {
                                 location.href="/student/manageActivity?activityId="+this.activity.activityId

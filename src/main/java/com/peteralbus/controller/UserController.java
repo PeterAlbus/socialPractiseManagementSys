@@ -62,6 +62,7 @@ public class UserController
         token.setRememberMe(rememberMe);
         try {
             subject.login(token);
+            subject.getSession().setTimeout(86400000);
         }
         catch (IncorrectCredentialsException ie){
             return "登陆失败：密码错误！";

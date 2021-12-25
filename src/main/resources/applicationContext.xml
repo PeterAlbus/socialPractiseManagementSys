@@ -143,13 +143,11 @@
     </mvc:annotation-driven>
     <!-- SpringMVC不处理静态资源(如.css .js .html .mp3 .mp4等) -->
     <mvc:default-servlet-handler />
-    <!--自定义的filter-->
     <bean id="roleOrFilter" class="com.peteralbus.config.CustomRolesAuthorizationFilter"/>
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <!-- loginUrl认证提交地址，如果没有认证将会请求此地址进行认证，请求地址将由formAuthenticationFilter进行表单认证 -->
         <property name="loginUrl" value="/login"/>
-        <!-- 认证成功统一跳转到first.action，建议不配置，shiro认证成功会默认跳转到上一个请求路径 -->
         <property name="successUrl" value="/"/>
         <!-- 通过unauthorizedUrl指定没有权限操作时跳转页面，这个位置会拦截不到，下面有给出解决方法 -->
         <property name="unauthorizedUrl" value="/jsp/account/refuse.jsp"/>
@@ -161,6 +159,7 @@
         <!-- 过滤器定义，从上到下执行，一般将/**放在最下面 -->
         <property name="filterChainDefinitions">
             <value>
+
                 /iview/**=anon
                 /vue/**=anon
                 /css/**=anon
@@ -173,9 +172,7 @@
 
                 /jsp/account/** =anon
                 /logout = logout
-                /** = authc
-                <!-- /**=authc 所有的url都必须通过认证才可以访问 -->
-                <!-- /**=anon 所有的url都可以匿名访问,必须配置在最后一排，不然所有的请求都不会拦截 -->
+                /** = user
             </value>
         </property>
     </bean>

@@ -190,6 +190,10 @@ public class StudentController
         {
             return "error:未找到该小组";
         }
+        if(groupService.getMemberCount(groupId)>=activityService.getActivityById(group.getActivityId()).getMaxPeople())
+        {
+            return "toManyMembers";
+        }
         int result=participateService.participateWithOldGroup(group);
         if(result>0)
         {
