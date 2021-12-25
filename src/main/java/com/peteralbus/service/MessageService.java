@@ -13,13 +13,23 @@ import java.util.List;
 
 /**
  * The type Message service.
+ *
  * @author peteralbus
  */
 @Service
 public class MessageService
 {
+    /**
+     * The Message dao.
+     */
     @Autowired
     MessageDao messageDao;
+
+    /**
+     * Gets message.
+     *
+     * @return the message
+     */
     public List<Message> getMessage()
     {
         Subject subject = SecurityUtils.getSubject();
@@ -28,6 +38,12 @@ public class MessageService
         queryWrapper.eq("message_receiver",user.getUserId());
         return messageDao.selectList(queryWrapper);
     }
+
+    /**
+     * Gets new message.
+     *
+     * @return the new message
+     */
     public List<Message> getNewMessage()
     {
         Subject subject = SecurityUtils.getSubject();
@@ -37,6 +53,12 @@ public class MessageService
         queryWrapper.eq("is_read",false);
         return messageDao.selectList(queryWrapper);
     }
+
+    /**
+     * Gets new message count.
+     *
+     * @return the new message count
+     */
     public Long getNewMessageCount()
     {
         Subject subject = SecurityUtils.getSubject();
@@ -46,6 +68,16 @@ public class MessageService
         queryWrapper.eq("is_read",false);
         return messageDao.selectCount(queryWrapper);
     }
+
+    /**
+     * Send message int.
+     *
+     * @param targetId the target id
+     * @param sender   the sender
+     * @param title    the title
+     * @param content  the content
+     * @return the int
+     */
     public int sendMessage(Long targetId,String sender,String title,String content)
     {
         Message message=new Message();
@@ -56,6 +88,13 @@ public class MessageService
         message.setRead(false);
         return messageDao.insert(message);
     }
+
+    /**
+     * Read message int.
+     *
+     * @param messageId the message id
+     * @return the int
+     */
     public int readMessage(Long messageId)
     {
         Message message=messageDao.selectById(messageId);

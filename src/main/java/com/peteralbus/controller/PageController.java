@@ -23,15 +23,25 @@ import java.util.TreeMap;
 
 /**
  * The type Page controller.
+ *
  * @author PeterAlbus
  */
 @Controller
 public class PageController
 {
+    /**
+     * The User service.
+     */
     @Autowired
     UserService userService;
+    /**
+     * The Message service.
+     */
     @Autowired
     MessageService messageService;
+    /**
+     * The Activity service.
+     */
     @Autowired
     ActivityService activityService;
     /**
@@ -46,6 +56,12 @@ public class PageController
         modelAndView.addObject("newMessageList",messageService.getNewMessage());
         return modelAndView;
     }
+
+    /**
+     * Home page model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/index")
     public ModelAndView homePage()
     {
@@ -71,6 +87,13 @@ public class PageController
         modelAndView.setViewName("/jsp/home.jsp");
         return modelAndView;
     }
+
+    /**
+     * User detail model and view.
+     *
+     * @param userId the user id
+     * @return the model and view
+     */
     @RequestMapping("/user")
     public ModelAndView userDetail(Long userId)
     {
@@ -92,6 +115,13 @@ public class PageController
         modelAndView.setViewName("/jsp/account/user.jsp");
         return modelAndView;
     }
+
+    /**
+     * User center model and view.
+     *
+     * @param session the session
+     * @return the model and view
+     */
     @RequestMapping("/userCenter")
     public ModelAndView userCenter(HttpSession session)
     {
@@ -104,6 +134,12 @@ public class PageController
         modelAndView.setViewName("/jsp/account/userCenter.jsp");
         return modelAndView;
     }
+
+    /**
+     * Message list model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/messageList")
     public ModelAndView messageList()
     {
@@ -112,6 +148,13 @@ public class PageController
         modelAndView.setViewName("/jsp/message/messageList.jsp");
         return modelAndView;
     }
+
+    /**
+     * Message model and view.
+     *
+     * @param messageId the message id
+     * @return the model and view
+     */
     @RequestMapping("/message")
     public ModelAndView message(Long messageId)
     {
@@ -119,6 +162,13 @@ public class PageController
         modelAndView.setViewName("/jsp/message/message.jsp");
         return modelAndView;
     }
+
+    /**
+     * Read message string.
+     *
+     * @param messageId the message id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/readMessage")
     public String readMessage(Long messageId)

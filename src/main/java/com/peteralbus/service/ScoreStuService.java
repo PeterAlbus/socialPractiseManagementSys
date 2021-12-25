@@ -9,15 +9,29 @@ import org.springframework.stereotype.Service;
 
 /**
  * The type Score stu service.
+ *
  * @author peteralbus
  */
 @Service
 public class ScoreStuService
 {
+    /**
+     * The Score stu dao.
+     */
     @Autowired
     ScoreStuDao scoreStuDao;
+    /**
+     * The Participate dao.
+     */
     @Autowired
     ParticipateDao participateDao;
+
+    /**
+     * Insert int.
+     *
+     * @param scoreStu the score stu
+     * @return the int
+     */
     public int insert(ScoreStu scoreStu)
     {
         if(scoreStuDao.insert(scoreStu)>0)

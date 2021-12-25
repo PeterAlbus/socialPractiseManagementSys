@@ -34,8 +34,14 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController
 {
+    /**
+     * The User service.
+     */
     @Autowired
     UserService userService;
+    /**
+     * The Message service.
+     */
     @Autowired
     MessageService messageService;
 
@@ -46,11 +52,13 @@ public class UserController
         modelAndView.addObject("newMessageList",messageService.getNewMessage());
         return modelAndView;
     }
+
     /**
      * Login string.
      *
-     * @param username the username
-     * @param password the password
+     * @param username   the username
+     * @param password   the password
+     * @param rememberMe the remember me
      * @return the string
      */
     @ResponseBody
@@ -73,6 +81,13 @@ public class UserController
         }
         return "success";
     }
+
+    /**
+     * Register string.
+     *
+     * @param user the user
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/register")
     public String register(User user)
@@ -102,6 +117,13 @@ public class UserController
             return "注册失败:"+e.getMessage();
         }
     }
+
+    /**
+     * Update user string.
+     *
+     * @param user the user
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/updateUser")
     public String updateUser(User user)
@@ -121,6 +143,15 @@ public class UserController
             return "error";
         }
     }
+
+    /**
+     * Change password model and view.
+     *
+     * @param oldPassword the old password
+     * @param newPassword the new password
+     * @param session     the session
+     * @return the model and view
+     */
     @RequestMapping("/changePassword")
     public ModelAndView changePassword(String oldPassword, String newPassword, HttpSession session)
     {
@@ -156,6 +187,12 @@ public class UserController
         }
         return modelAndView;
     }
+
+    /**
+     * Delete user model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/deleteUser")
     public ModelAndView deleteUser()
     {

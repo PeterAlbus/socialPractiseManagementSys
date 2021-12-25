@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * The type Principal util.
+ *
  * @author peteralbus
  */
 @Component

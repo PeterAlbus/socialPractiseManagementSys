@@ -26,10 +26,19 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController
 {
+    /**
+     * The Message service.
+     */
     @Autowired
     MessageService messageService;
+    /**
+     * The Activity service.
+     */
     @Autowired
     ActivityService activityService;
+    /**
+     * The User service.
+     */
     @Autowired
     UserService userService;
     private ModelAndView basicModelAndView()
@@ -39,6 +48,12 @@ public class AdminController
         modelAndView.addObject("newMessageList",messageService.getNewMessage());
         return modelAndView;
     }
+
+    /**
+     * Activities model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/activities")
     public ModelAndView activities()
     {
@@ -48,6 +63,12 @@ public class AdminController
         modelAndView.setViewName("/jsp/admin/activities.jsp");
         return modelAndView;
     }
+
+    /**
+     * Users model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/users")
     public ModelAndView users()
     {
@@ -57,6 +78,13 @@ public class AdminController
         modelAndView.setViewName("/jsp/admin/users.jsp");
         return modelAndView;
     }
+
+    /**
+     * Restore activity string.
+     *
+     * @param activityId the activity id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/restoreActivity")
     public String restoreActivity(Long activityId)
@@ -67,6 +95,13 @@ public class AdminController
         }
         return "error";
     }
+
+    /**
+     * Reset password string.
+     *
+     * @param userId the user id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/resetPassword")
     public String resetPassword(Long userId)
@@ -79,6 +114,13 @@ public class AdminController
         }
         return "error";
     }
+
+    /**
+     * Sets admin.
+     *
+     * @param userId the user id
+     * @return the admin
+     */
     @ResponseBody
     @RequestMapping("/setAdmin")
     public String setAdmin(Long userId)

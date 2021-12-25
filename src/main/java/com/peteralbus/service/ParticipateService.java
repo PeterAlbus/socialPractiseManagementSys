@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * The type Participate service.
+ *
  * @author peteralbus
  */
 @Service
@@ -34,6 +35,9 @@ public class ParticipateService
     @Autowired
     GroupDao groupDao;
 
+    /**
+     * The Record dao.
+     */
     @Autowired
     RecordDao recordDao;
 
@@ -150,6 +154,12 @@ public class ParticipateService
         }
     }
 
+    /**
+     * Delete participate int.
+     *
+     * @param participationId the participation id
+     * @return the int
+     */
     public int deleteParticipate(Long participationId)
     {
         Participate participate=participateDao.selectById(participationId);
@@ -172,6 +182,12 @@ public class ParticipateService
         return participateDao.deleteById(participationId);
     }
 
+    /**
+     * Gets by id.
+     *
+     * @param participationId the participation id
+     * @return the by id
+     */
     public Participate getById(Long participationId)
     {
         return participateDao.selectById(participationId);

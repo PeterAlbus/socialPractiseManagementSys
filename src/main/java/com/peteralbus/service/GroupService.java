@@ -36,9 +36,15 @@ public class GroupService
     @Autowired
     ParticipateDao participateDao;
 
+    /**
+     * The Score group dao.
+     */
     @Autowired
     ScoreGroupDao scoreGroupDao;
 
+    /**
+     * The Score stu dao.
+     */
     @Autowired
     ScoreStuDao scoreStuDao;
 
@@ -115,6 +121,12 @@ public class GroupService
         return memberList;
     }
 
+    /**
+     * Gets score.
+     *
+     * @param groupId the group id
+     * @return the score
+     */
     public Map<String,Double> getScore(Long groupId)
     {
         Map<String,Double> map=new HashMap<>();

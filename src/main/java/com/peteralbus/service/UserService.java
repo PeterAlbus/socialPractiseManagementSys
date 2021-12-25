@@ -35,10 +35,17 @@ public class UserService
         return userDao.insert(user);
     }
 
+    /**
+     * Update user int.
+     *
+     * @param user the user
+     * @return the int
+     */
     public int updateUser(User user)
     {
         return userDao.updateById(user);
     }
+
     /**
      * Query by username user.
      *
@@ -77,6 +84,11 @@ public class UserService
         return userDao.deleteById(user);
     }
 
+    /**
+     * Gets teacher list.
+     *
+     * @return the teacher list
+     */
     public List<User> getTeacherList()
     {
         QueryWrapper<User> queryWrapper=new QueryWrapper<>();
@@ -84,16 +96,33 @@ public class UserService
         return userDao.selectList(queryWrapper);
     }
 
+    /**
+     * Gets user list.
+     *
+     * @return the user list
+     */
     public List<User> getUserList()
     {
         return userDao.selectList(null);
     }
 
+    /**
+     * Query by id user.
+     *
+     * @param userId the user id
+     * @return the user
+     */
     public User queryById(Long userId)
     {
         return userDao.selectById(userId);
     }
 
+    /**
+     * Sets admin.
+     *
+     * @param userId the user id
+     * @return the admin
+     */
     public int setAdmin(Long userId)
     {
         User user=userDao.selectById(userId);

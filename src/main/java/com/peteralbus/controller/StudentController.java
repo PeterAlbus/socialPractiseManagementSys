@@ -19,6 +19,7 @@ import java.util.Map;
 
 /**
  * The type Student controller.
+ *
  * @author peteralbus
  */
 @Controller
@@ -26,14 +27,29 @@ import java.util.Map;
 @RequestMapping("/student")
 public class StudentController
 {
+    /**
+     * The Message service.
+     */
     @Autowired
     MessageService messageService;
+    /**
+     * The Activity service.
+     */
     @Autowired
     ActivityService activityService;
+    /**
+     * The Group service.
+     */
     @Autowired
     GroupService groupService;
+    /**
+     * The Participate service.
+     */
     @Autowired
     ParticipateService participateService;
+    /**
+     * The Record service.
+     */
     @Autowired
     RecordService recordService;
     private ModelAndView basicModelAndView()
@@ -43,6 +59,12 @@ public class StudentController
         modelAndView.addObject("newMessageList",messageService.getNewMessage());
         return modelAndView;
     }
+
+    /**
+     * Activities model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/activities")
     public ModelAndView activities()
     {
@@ -56,6 +78,13 @@ public class StudentController
         modelAndView.setViewName("/jsp/student/activities.jsp");
         return modelAndView;
     }
+
+    /**
+     * Apply activity model and view.
+     *
+     * @param activityId the activity id
+     * @return the model and view
+     */
     @RequestMapping("/applyActivity")
     public ModelAndView applyActivity(Long activityId)
     {
@@ -74,6 +103,13 @@ public class StudentController
         modelAndView.setViewName("/jsp/student/applyActivity.jsp");
         return modelAndView;
     }
+
+    /**
+     * Manage activity model and view.
+     *
+     * @param activityId the activity id
+     * @return the model and view
+     */
     @RequestMapping("/manageActivity")
     public ModelAndView manageActivity(Long activityId)
     {
@@ -120,6 +156,13 @@ public class StudentController
         modelAndView.addObject("activity",activity);
         return modelAndView;
     }
+
+    /**
+     * Insert record string.
+     *
+     * @param record the record
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/insertRecord")
     public String insertRecord(Record record)
@@ -139,6 +182,13 @@ public class StudentController
         }
         return "success";
     }
+
+    /**
+     * Accept join string.
+     *
+     * @param participateId the participate id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/acceptJoin")
     public String acceptJoin(Long participateId)
@@ -153,6 +203,13 @@ public class StudentController
                 "小组申请通过通知","先前申请社会实践小组的申请通过了！快去看看！（活动id："+participate.getActivityId()+"）");
         return "success";
     }
+
+    /**
+     * Refuse join string.
+     *
+     * @param participateId the participate id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/refuseJoin")
     public String refuseJoin(Long participateId)
@@ -167,6 +224,13 @@ public class StudentController
                 "小组申请拒绝通知","很遗憾，你加入小组的申请被组长拒绝了（活动id："+participate.getActivityId()+"）");
         return "success";
     }
+
+    /**
+     * Participate with new group string.
+     *
+     * @param group the group
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/participateWithNewGroup")
     public String participateWithNewGroup(Group group)
@@ -181,6 +245,13 @@ public class StudentController
             return "error";
         }
     }
+
+    /**
+     * Participate with old group string.
+     *
+     * @param groupId the group id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/participateWithOldGroup")
     public String participateWithOldGroup(Long groupId)
@@ -206,6 +277,13 @@ public class StudentController
             return "error";
         }
     }
+
+    /**
+     * Delete activity string.
+     *
+     * @param participationId the participation id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/deleteParticipate")
     public String deleteActivity(Long participationId)

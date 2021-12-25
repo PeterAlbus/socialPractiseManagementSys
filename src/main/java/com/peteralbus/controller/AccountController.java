@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * The type Account controller.
+ *
  * @author PeterAlbus
  */
 @Controller
@@ -22,6 +23,7 @@ public class AccountController
     /**
      * Login model and view.
      *
+     * @param session the session
      * @return the model and view
      */
     @RequestMapping("/login")
@@ -37,6 +39,11 @@ public class AccountController
         return modelAndView;
     }
 
+    /**
+     * Register model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/register")
     public ModelAndView register()
     {
@@ -45,6 +52,11 @@ public class AccountController
         return modelAndView;
     }
 
+    /**
+     * Refuse model and view.
+     *
+     * @return the model and view
+     */
     @RequiresAuthentication
     @RequestMapping("/refuse")
     public ModelAndView refuse()

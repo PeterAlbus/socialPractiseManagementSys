@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * The type My meta-object handler.
+ *
  * @author PeterAlbus
  */
 public class MyMetaObjectHandler implements MetaObjectHandler

@@ -27,10 +27,19 @@ public class RecordService
      */
     @Autowired
     RecordDao recordDao;
+    /**
+     * The Group dao.
+     */
     @Autowired
     GroupDao groupDao;
+    /**
+     * The Participate dao.
+     */
     @Autowired
     ParticipateDao participateDao;
+    /**
+     * The User dao.
+     */
     @Autowired
     UserDao userDao;
 
@@ -58,6 +67,12 @@ public class RecordService
         return recordDao.selectList(queryWrapper);
     }
 
+    /**
+     * Select by group list.
+     *
+     * @param groupId the group id
+     * @return the list
+     */
     public List<Record> selectByGroup(Long groupId)
     {
         Group group= groupDao.selectById(groupId);
@@ -77,6 +92,12 @@ public class RecordService
         return recordList;
     }
 
+    /**
+     * Sets read.
+     *
+     * @param recordId the record id
+     * @return the read
+     */
     public int setRead(Long recordId)
     {
         Record record=recordDao.selectById(recordId);

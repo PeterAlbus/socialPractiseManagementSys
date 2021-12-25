@@ -162,6 +162,12 @@ public class ActivityService
         return activityList;
     }
 
+    /**
+     * Gets teacher list.
+     *
+     * @param activityId the activity id
+     * @return the teacher list
+     */
     public List<User> getTeacherList(Long activityId)
     {
         return activityDao.getTeacherList(activityId);
@@ -177,6 +183,12 @@ public class ActivityService
         return activityDao.getCount();
     }
 
+    /**
+     * Delete activity int.
+     *
+     * @param activityId the activity id
+     * @return the int
+     */
     public int deleteActivity(Long activityId)
     {
         int result=0;
@@ -200,11 +212,22 @@ public class ActivityService
         return result;
     }
 
+    /**
+     * Admin activity list list.
+     *
+     * @return the list
+     */
     public List<Activity> adminActivityList()
     {
         return activityDao.adminActivityList();
     }
 
+    /**
+     * Restore int.
+     *
+     * @param activityId the activity id
+     * @return the int
+     */
     public int restore(Long activityId)
     {
         int result=0;
@@ -222,6 +245,12 @@ public class ActivityService
         return result;
     }
 
+    /**
+     * Gets user stat.
+     *
+     * @param user the user
+     * @return the user stat
+     */
     public Map<String,Long> getUserStat(User user)
     {
         Map<String,Long> stat=new TreeMap<>();

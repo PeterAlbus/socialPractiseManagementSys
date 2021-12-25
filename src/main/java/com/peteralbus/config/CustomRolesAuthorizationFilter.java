@@ -7,6 +7,7 @@ import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 
 /**
  * The type Custom roles authorization filter.
+ *
  * @author chen1218chen(csdn)
  */
 public class CustomRolesAuthorizationFilter extends AuthorizationFilter

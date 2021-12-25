@@ -20,6 +20,7 @@ import java.util.Map;
 
 /**
  * The type Teacher controller.
+ *
  * @author PeterAlbus
  */
 @Controller
@@ -27,20 +28,44 @@ import java.util.Map;
 @RequestMapping("/teacher")
 public class TeacherController
 {
+    /**
+     * The Activity service.
+     */
     @Autowired
     ActivityService activityService;
+    /**
+     * The User service.
+     */
     @Autowired
     UserService userService;
+    /**
+     * The Group service.
+     */
     @Autowired
     GroupService groupService;
+    /**
+     * The Record service.
+     */
     @Autowired
     RecordService recordService;
+    /**
+     * The Score group service.
+     */
     @Autowired
     ScoreGroupService scoreGroupService;
+    /**
+     * The Score stu service.
+     */
     @Autowired
     ScoreStuService scoreStuService;
+    /**
+     * The Message service.
+     */
     @Autowired
     MessageService messageService;
+    /**
+     * The Participate service.
+     */
     @Autowired
     ParticipateService participateService;
     private ModelAndView basicModelAndView()
@@ -50,6 +75,12 @@ public class TeacherController
         modelAndView.addObject("newMessageList",messageService.getNewMessage());
         return modelAndView;
     }
+
+    /**
+     * Activities model and view.
+     *
+     * @return the model and view
+     */
     @RequestMapping("/activities")
     public ModelAndView activities()
     {
@@ -63,6 +94,13 @@ public class TeacherController
         modelAndView.setViewName("/jsp/teacher/activity.jsp");
         return modelAndView;
     }
+
+    /**
+     * Activity detail model and view.
+     *
+     * @param activityId the activity id
+     * @return the model and view
+     */
     @RequestMapping("/activityDetail")
     public ModelAndView activityDetail(Long activityId)
     {
@@ -72,6 +110,13 @@ public class TeacherController
         modelAndView.setViewName("/jsp/teacher/activityDetail.jsp");
         return modelAndView;
     }
+
+    /**
+     * Modify activity model and view.
+     *
+     * @param activityId the activity id
+     * @return the model and view
+     */
     @RequestMapping("/modifyActivity")
     public ModelAndView modifyActivity(Long activityId)
     {
@@ -91,6 +136,13 @@ public class TeacherController
         modelAndView.setViewName("/jsp/teacher/modifyActivity.jsp");
         return modelAndView;
     }
+
+    /**
+     * Manage group model and view.
+     *
+     * @param groupId the group id
+     * @return the model and view
+     */
     @RequestMapping("/manageGroup")
     public ModelAndView manageGroup(Long groupId)
     {
@@ -112,6 +164,13 @@ public class TeacherController
         modelAndView.setViewName("/jsp/teacher/manageGroup.jsp");
         return modelAndView;
     }
+
+    /**
+     * Add activity string.
+     *
+     * @param activity the activity
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/addActivity")
     public String addActivity(Activity activity)
@@ -133,6 +192,13 @@ public class TeacherController
             return "error:"+e.getMessage();
         }
     }
+
+    /**
+     * Update activity string.
+     *
+     * @param activity the activity
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/updateActivity")
     public String updateActivity(Activity activity)
@@ -154,6 +220,13 @@ public class TeacherController
             return "error:"+e.getMessage();
         }
     }
+
+    /**
+     * Delete activity string.
+     *
+     * @param activityId the activity id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/deleteActivity")
     public String deleteActivity(Long activityId)
@@ -175,6 +248,14 @@ public class TeacherController
             return "error:"+e.getMessage();
         }
     }
+
+    /**
+     * Add teacher to activity string.
+     *
+     * @param userId     the user id
+     * @param activityId the activity id
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/addTeacherToActivity")
     public String addTeacherToActivity(Long userId,Long activityId)
@@ -192,6 +273,13 @@ public class TeacherController
         }
         return "error";
     }
+
+    /**
+     * Sets read.
+     *
+     * @param recordId the record id
+     * @return the read
+     */
     @ResponseBody
     @RequestMapping("/setRead")
     public String setRead(Long recordId)
@@ -203,6 +291,13 @@ public class TeacherController
         }
         return "error";
     }
+
+    /**
+     * Score stu string.
+     *
+     * @param scoreStu the score stu
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/scoreStu")
     public String scoreStu(ScoreStu scoreStu)
@@ -217,6 +312,13 @@ public class TeacherController
         }
         return "error";
     }
+
+    /**
+     * Score group string.
+     *
+     * @param scoreGroup the score group
+     * @return the string
+     */
     @ResponseBody
     @RequestMapping("/scoreGroup")
     public String scoreGroup(ScoreGroup scoreGroup)
