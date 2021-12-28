@@ -294,16 +294,15 @@
                                 else
                                 {
                                     this.$messageBox.confirm(
-                                        '创建活动成功，查看详情?',
+                                        '创建活动成功！',
                                         '成功',
                                         {
                                             confirmButtonText: '确认',
-                                            cancelButtonText: '留在此页',
                                             type: 'success',
                                         }
                                     )
                                         .then(() => {
-
+                                            location.href="/teacher/activities"
                                         })
                                         .catch(() => {
                                             location.href="/teacher/activities"
